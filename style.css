@@ -204,6 +204,23 @@ h1 {
     transform: scale(0.98);
 }
 
+/* バージョン情報 */
+.version-info {
+    position: fixed;
+    bottom: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.7);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.7em;
+    font-family: monospace;
+    z-index: 1000;
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
 .timer {
     color: #e74c3c;
 }
