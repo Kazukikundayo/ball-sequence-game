@@ -31,12 +31,12 @@ const sizePixels = {
 function getActualBallSize(size) {
     if (window.innerWidth <= 480) {
         const mobileSizes = { 
-            'small': 60, 'medium': 80, 'large': 100, 'xlarge': 120, 'xxlarge': 140
+            'small': 45, 'medium': 60, 'large': 75, 'xlarge': 90, 'xxlarge': 105
         };
         return mobileSizes[size];
     } else if (window.innerWidth <= 768) {
         const tabletSizes = { 
-            'small': 70, 'medium': 100, 'large': 130, 'xlarge': 160, 'xxlarge': 180
+            'small': 55, 'medium': 75, 'large': 95, 'xlarge': 115, 'xxlarge': 135
         };
         return tabletSizes[size];
     }
