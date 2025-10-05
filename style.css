@@ -137,21 +137,71 @@ h1 {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* モバイル用1行レイアウト（デスクトップでは非表示） */
-.mobile-controls {
+/* タイトルを全デバイスで非表示 */
+h1 {
     display: none;
 }
 
-.info-panel {
+/* モバイル用1行レイアウト（全デバイスで使用） */
+.mobile-controls {
     display: flex;
-    justify-content: space-around;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    font-size: 1.2em;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 8px;
+    font-size: 1.1em;
+    color: white;
+    height: 45px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* デスクトップ用：従来のUIを非表示 */
+.info-panel, .controls {
+    display: none;
+}
+
+/* デスクトップ用：1行レイアウトの詳細設定 */
+.mobile-info {
+    display: flex;
+    gap: 20px;
+    flex: 1;
+    font-size: 1.1em;
+}
+
+.mobile-info span {
+    white-space: nowrap;
     font-weight: bold;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mobile-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.mobile-buttons button {
+    padding: 8px 16px;
+    font-size: 1.0em;
+    margin: 0;
+    border-radius: 6px;
+    border: 1px solid #666;
+    background: #555;
+    color: white;
+    min-width: 80px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.mobile-buttons button:hover {
+    background: #777;
+    transform: translateY(-1px);
+}
+
+.mobile-buttons button:active {
+    background: #999;
+    transform: scale(0.98);
 }
 
 .timer {
@@ -972,34 +1022,31 @@ button {
     /* タブレット用：ゲームエリアを重視 */
     .container {
         width: 100%;
-        padding: 8px;
+        padding: 6px;
         height: 100vh;
     }
     
-    h1 {
-        font-size: 1.4em;
-        margin: 8px 0;
+    /* 1行UIのサイズを中間に調整 */
+    .mobile-controls {
+        padding: 6px 10px;
+        height: 40px;
+        font-size: 1.0em;
     }
     
-    .info-panel {
-        padding: 8px;
-        margin-bottom: 8px;
+    .mobile-info {
+        gap: 15px;
+    }
+    
+    .mobile-buttons button {
+        padding: 6px 12px;
         font-size: 0.9em;
-    }
-    
-    .controls {
-        margin-bottom: 8px;
-    }
-    
-    .controls button {
-        padding: 8px 16px;
-        font-size: 0.9em;
+        min-width: 60px;
     }
     
     .game-area {
         flex: 1;
         padding: 8px;
-        min-height: calc(100vh - 160px); /* タイトル+ボタン分を除く */
+        min-height: calc(100vh - 70px); /* 1行UI分を除く */
     }
     
     /* タブレット用ボールサイズ：モバイルより大きく、PCより小さく */
@@ -1044,63 +1091,30 @@ button {
         border-radius: 0;
     }
     
-    /* モバイルではタイトルを完全に非表示 */
-    h1 {
-        display: none;
-    }
-    
-    /* デスクトップ用UIを非表示 */
-    .info-panel, .controls {
-        display: none;
-    }
-    
-    /* モバイル用1行レイアウトを表示 - サイズアップ */
+    /* モバイル用1行レイアウト - iPhone専用調整 */
     .mobile-controls {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
         padding: 4px 6px;
         margin-bottom: 3px;
-        background: rgba(0, 0, 0, 0.9);
-        border-radius: 5px;
-        font-size: 0.9em; /* 0.6em → 0.9em に拡大 */
-        color: white;
-        height: 36px; /* 24px → 36px に拡大 */
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        font-size: 0.9em;
+        height: 36px;
     }
     
     .mobile-info {
-        display: flex;
-        gap: 12px; /* 8px → 12px に拡大 */
-        flex: 1;
+        gap: 12px;
     }
     
     .mobile-info span {
-        white-space: nowrap;
-        font-size: 0.9em; /* 0.6em → 0.9em に拡大 */
-        font-weight: bold;
+        font-size: 0.9em;
     }
     
     .mobile-buttons {
-        display: flex;
-        gap: 4px; /* 2px → 4px に拡大 */
+        gap: 4px;
     }
     
     .mobile-buttons button {
-        padding: 4px 8px; /* 2px 6px → 4px 8px に拡大 */
-        font-size: 0.8em; /* 0.5em → 0.8em に拡大 */
-        margin: 0;
-        border-radius: 4px;
-        border: 1px solid #555;
-        background: #444;
-        color: white;
-        min-width: 40px; /* 30px → 40px に拡大 */
-        font-weight: bold;
-    }
-    
-    .mobile-buttons button:active {
-        background: #666;
-        transform: scale(0.95);
+        padding: 4px 8px;
+        font-size: 0.8em;
+        min-width: 40px;
     }
     
     /* ゲームエリアを最大化（UIサイズ増加分を調整） */
