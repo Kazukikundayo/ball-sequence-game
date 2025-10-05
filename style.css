@@ -331,20 +331,21 @@ button {
 }
 
 .result {
-    position: fixed; /* 画面に固定表示 */
-    top: 50%; /* 画面中央 */
+    position: absolute; /* ゲーム画面内に配置 */
+    top: 50%; /* ゲーム画面中央 */
     left: 50%;
     transform: translate(-50%, -50%); /* 中央配置 */
-    background: rgba(248, 249, 250, 0.95); /* 半透明背景 */
-    padding: 20px;
-    border-radius: 15px;
+    background: rgba(248, 249, 250, 0.98); /* ほぼ不透明 */
+    padding: 15px;
+    border-radius: 12px;
     display: none;
-    z-index: 9999; /* 最前面に表示 */
-    max-width: 90vw; /* 画面幅の90%以下 */
-    max-height: 85vh; /* 画面高さの85%以下 */
+    z-index: 1000; /* ゲーム画面内で最前面 */
+    width: 85%; /* ゲーム画面の85%幅 */
+    max-height: 80%; /* ゲーム画面の80%高さ以下 */
     overflow-y: auto; /* 縦スクロール可能 */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* 影で強調 */
-    border: 2px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6); /* 強めの影 */
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    font-weight: normal; /* 文字の太さを標準に */
 }
 
 .game-area {
@@ -881,7 +882,7 @@ button {
 
 .clear-title {
     font-size: 3.5em;
-    font-weight: bold;
+    font-weight: 600; /* bold → 600 に軽量化 */
     margin: 0 0 10px 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     animation: bounceIn 1s ease-out;
@@ -910,6 +911,7 @@ button {
 
 .clear-subtitle {
     font-size: 1.3em;
+    font-weight: normal; /* 文字の太さを標準に */
     margin: 0 0 30px 0;
     opacity: 0;
     animation: fadeInUp 1s ease-out 0.5s forwards;
@@ -964,6 +966,7 @@ button {
 .stat-label {
     display: block;
     font-size: 0.9em;
+    font-weight: normal; /* 文字の太さを標準に */
     margin-bottom: 5px;
     opacity: 0.9;
 }
@@ -971,7 +974,7 @@ button {
 .stat-value {
     display: block;
     font-size: 1.4em;
-    font-weight: bold;
+    font-weight: 500; /* bold → 500 に軽量化 */
     color: #FFD700;
 }
 
@@ -1206,21 +1209,26 @@ button {
         border: 2px solid rgba(255, 255, 255, 0.9);
     }
     
-    /* モバイル用クリア画面調整 - iPhoneSE3対応 */
+    /* モバイル用クリア画面調整 - iPhoneSE3対応・ゲーム画面内配置 */
     .result {
-        padding: 10px; /* 15px → 10px に縮小 */
-        max-height: 90vh; /* 画面からはみ出ないように制限 */
+        position: absolute; /* ゲーム画面内に配置 */
+        width: 90%; /* ゲーム画面の90%幅 */
+        max-height: 85%; /* ゲーム画面の85%高さ以下 */
+        padding: 10px;
         overflow-y: auto; /* スクロール可能にする */
+        font-weight: normal; /* 文字を軽量化 */
     }
     
     .clear-title {
-        font-size: 1.6em; /* 2.0em → 1.6em に縮小 */
-        margin-bottom: 6px; /* 8px → 6px に縮小 */
+        font-size: 1.6em;
+        font-weight: 500; /* bold → 500 に軽量化 */
+        margin-bottom: 6px;
     }
     
     .clear-subtitle {
-        font-size: 0.9em; /* 1.0em → 0.9em に縮小 */
-        margin-bottom: 8px; /* 10px → 8px に縮小 */
+        font-size: 0.9em;
+        font-weight: normal; /* 文字の太さを標準に */
+        margin-bottom: 8px;
     }
     
     .result-stats {
@@ -1230,9 +1238,10 @@ button {
     }
     
     .stat-item {
-        min-width: 180px; /* 200px → 180px に縮小 */
-        margin-bottom: 6px; /* 8px → 6px に縮小 */
-        font-size: 0.9em; /* 1.0em → 0.9em に縮小 */
+        min-width: 180px;
+        margin-bottom: 6px;
+        font-size: 0.9em;
+        font-weight: normal; /* 文字の太さを標準に */
     }
     
     .emoji {
@@ -1241,9 +1250,9 @@ button {
     }
     
     .play-again-btn {
-        padding: 10px 20px; /* 12px 24px → 10px 20px に縮小 */
-        font-size: 1.0em; /* 1.1em → 1.0em に縮小 */
-        font-weight: bold;
-        margin-top: 8px; /* 上部マージン追加 */
+        padding: 10px 20px;
+        font-size: 1.0em;
+        font-weight: 500; /* bold → 500 に軽量化 */
+        margin-top: 8px;
     }
 }
