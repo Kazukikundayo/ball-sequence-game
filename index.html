@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ボール順番選択ゲーム</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 星空背景パーティクル -->
+    <div id="particles-background"></div>
+    
+    <div class="container">
+        <h1>ボール順番選択ゲーム</h1>
+        
+        <!-- バックグラウンド音楽 -->
+        <audio id="background-music" loop preload="auto" crossorigin="anonymous">
+            <source src="./background.mp3" type="audio/mpeg">
+            <source src="./background.ogg" type="audio/ogg">
+            <source src="./background.wav" type="audio/wav">
+            お使いのブラウザはオーディオをサポートしていません。
+        </audio>
+        
+        <!-- クリック音 -->
+        <audio id="click-sound" preload="auto" crossorigin="anonymous">
+            <source src="./Click.mp3" type="audio/mpeg">
+            <source src="./Click.ogg" type="audio/ogg">
+            <source src="./Click.wav" type="audio/wav">
+            お使いのブラウザはオーディオをサポートしていません。
+        </audio>
+        
+        <!-- クリア音 -->
+        <audio id="clear-sound" preload="auto" crossorigin="anonymous">
+            <source src="./Clear.mp3" type="audio/mpeg">
+            <source src="./Clear.ogg" type="audio/ogg">
+            <source src="./Clear.wav" type="audio/wav">
+            お使いのブラウザはオーディオをサポートしていません。
+        </audio>
+        
+        <div class="info-panel">
+            <div class="timer">時間: <span id="timer">0.00</span>秒</div>
+            <div class="next-number">次の番号: <span id="next-number">1</span></div>
+            <div class="score">スコア: <span id="score">0</span>/20</div>
+        </div>
+        <div class="controls">
+            <button id="start-btn">ゲーム開始（音楽付き）</button>
+            <button id="reset-btn">リセット</button>
+            <button id="music-btn" class="music-control">🎵 音楽ON/OFF</button>
+        </div>
+        <div class="game-area" id="game-area">
+            <!-- ボールがここに動的に生成されます -->
+        </div>
+        <div class="result" id="result">
+            <div class="celebration-container">
+                <h1 class="clear-title">🎉 GAME CLEAR! 🎉</h1>
+                <h2 class="clear-subtitle">完璧です！おめでとうございます！</h2>
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">⏱️ 実時間</span>
+                        <span class="stat-value" id="actual-time"></span>秒
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">⚠️ ペナルティ</span>
+                        <span class="stat-value" id="penalty-time"></span>秒
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">🏁 合計時間</span>
+                        <span class="stat-value" id="final-time"></span>秒
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">🎯 正答率</span>
+                        <span class="stat-value" id="accuracy-rate"></span>%
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">⭐ 評価</span>
+                        <span class="stat-value" id="final-grade"></span>
+                    </div>
+                </div>
+                <div class="celebration-emojis">
+                    <span class="emoji">🌟</span>
+                    <span class="emoji">🎊</span>
+                    <span class="emoji">🏆</span>
+                    <span class="emoji">🎊</span>
+                    <span class="emoji">🌟</span>
+                </div>
+                <button id="play-again-btn" class="play-again-btn">🔄 もう一度挑戦する</button>
+            </div>
+        </div>
+    </div>
+    <script src="script_simple.js"></script>
+</body>
+</html>

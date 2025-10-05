@@ -1,0 +1,1085 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@keyframes simpleParticleFall {
+    0% { 
+        transform: translateY(-100px);
+        opacity: 1;
+    }
+    100% { 
+        transform: translateY(calc(100vh + 100px));
+        opacity: 0.3;
+    }
+}
+
+@keyframes simpleParticleRain {
+    0% { 
+        transform: translateY(-80px);
+        opacity: 0.8;
+    }
+    100% { 
+        transform: translateY(calc(100vh + 80px));
+        opacity: 0.2;
+    }
+}
+
+/* 星空背景パーティクル */
+#particles-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+    overflow: hidden;
+}
+
+/* 固定の粒子背景（隙間埋め用） */
+#particles-background {
+    background-image: 
+        radial-gradient(3px 3px at 15px 15px, #ff6b6b, transparent),
+        radial-gradient(2px 2px at 45px 35px, #4ecdc4, transparent),
+        radial-gradient(4px 4px at 75px 55px, #45b7d1, transparent),
+        radial-gradient(3px 3px at 105px 25px, #96ceb4, transparent),
+        radial-gradient(2px 2px at 135px 45px, #ffeaa7, transparent),
+        radial-gradient(3px 3px at 165px 65px, #fd79a8, transparent),
+        radial-gradient(2px 2px at 195px 15px, #a29bfe, transparent),
+        radial-gradient(4px 4px at 225px 75px, #fd63f6, transparent),
+        radial-gradient(3px 3px at 255px 35px, #55a3ff, transparent),
+        radial-gradient(2px 2px at 285px 55px, #00b894, transparent);
+    background-repeat: repeat;
+    background-size: 300px 90px;
+}
+
+#particles-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(4px 4px at 20px 30px, #ff6b6b, transparent),
+        radial-gradient(3px 3px at 80px 60px, #4ecdc4, transparent),
+        radial-gradient(5px 5px at 140px 20px, #45b7d1, transparent),
+        radial-gradient(4px 4px at 200px 80px, #96ceb4, transparent),
+        radial-gradient(3px 3px at 260px 40px, #ffeaa7, transparent),
+        radial-gradient(4px 4px at 320px 70px, #fd79a8, transparent),
+        radial-gradient(3px 3px at 380px 10px, #a29bfe, transparent),
+        radial-gradient(5px 5px at 440px 50px, #fd63f6, transparent),
+        radial-gradient(4px 4px at 500px 90px, #55a3ff, transparent),
+        radial-gradient(3px 3px at 560px 25px, #00b894, transparent),
+        radial-gradient(4px 4px at 20px 120px, #fdcb6e, transparent),
+        radial-gradient(3px 3px at 80px 150px, #e17055, transparent);
+    background-repeat: repeat;
+    background-size: 600px 180px;
+    animation: simpleParticleFall 6s linear infinite;
+}
+
+#particles-background::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(3px 3px at 50px 25px, #a29bfe, transparent),
+        radial-gradient(4px 4px at 120px 55px, #fd63f6, transparent),
+        radial-gradient(3px 3px at 190px 15px, #55a3ff, transparent),
+        radial-gradient(5px 5px at 250px 75px, #00b894, transparent),
+        radial-gradient(4px 4px at 310px 35px, #fdcb6e, transparent),
+        radial-gradient(3px 3px at 370px 65px, #e17055, transparent),
+        radial-gradient(4px 4px at 430px 5px, #ff6b6b, transparent),
+        radial-gradient(3px 3px at 490px 45px, #4ecdc4, transparent),
+        radial-gradient(5px 5px at 550px 85px, #45b7d1, transparent),
+        radial-gradient(4px 4px at 50px 115px, #96ceb4, transparent),
+        radial-gradient(3px 3px at 120px 145px, #ffeaa7, transparent),
+        radial-gradient(4px 4px at 190px 105px, #fd79a8, transparent);
+    background-repeat: repeat;
+    background-size: 600px 170px;
+    animation: simpleParticleRain 4s linear infinite;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: transparent;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: 20px;
+    padding: 15px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    width: 98vw;
+    height: 95vh;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+h1 {
+    color: #ffffff;
+    margin-bottom: 20px;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.info-panel {
+    display: flex;
+    justify-content: space-around;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.timer {
+    color: #e74c3c;
+}
+
+.next-number {
+    color: #3498db;
+}
+
+.score {
+    color: #27ae60;
+}
+
+.controls {
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 12px 24px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+#start-btn {
+    background: #27ae60;
+    color: white;
+}
+
+#start-btn:hover {
+    background: #219a52;
+    transform: translateY(-2px);
+}
+
+#reset-btn {
+    background: #e74c3c;
+    color: white;
+}
+
+#reset-btn:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+}
+
+#play-again-btn {
+    background: #3498db;
+    color: white;
+    margin-top: 20px;
+}
+
+#play-again-btn:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+}
+
+.music-control {
+    background: #9b59b6;
+    color: white;
+    font-size: 0.9em;
+    padding: 10px 20px;
+}
+
+.music-control:hover {
+    background: #8e44ad;
+    transform: translateY(-2px);
+}
+
+.music-control.muted {
+    background: #95a5a6;
+}
+
+.music-control.muted:hover {
+    background: #7f8c8d;
+}
+
+/* 音楽ボタンのアニメーション（注意を引くため） */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* タイムアウト警告の点滅アニメーション */
+@keyframes timeoutBlink {
+    0% { 
+        background: radial-gradient(circle at 30% 30%, #ff9a9e, #ff6b6b, #ee5a52);
+        transform: scale(1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    50% { 
+        background: radial-gradient(circle at 30% 30%, #ffeb3b, #ff9800, #f57c00);
+        transform: scale(1.15);
+        box-shadow: 0 0 25px rgba(255, 193, 7, 0.9);
+    }
+    100% { 
+        background: radial-gradient(circle at 30% 30%, #ff9a9e, #ff6b6b, #ee5a52);
+        transform: scale(1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+}
+
+.ball.timeout-warning {
+    animation: timeoutBlink 0.4s ease-in-out infinite !important;
+    z-index: 1000 !important;
+}
+
+.result {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 15px;
+    margin-top: 20px;
+    display: none;
+}
+
+.game-area {
+    position: relative;
+    width: 100%;
+    flex: 1;
+    background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    margin: 10px 0;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+/* 固定の粒子背景（隙間埋め用） */
+.game-area {
+    background-image: 
+        radial-gradient(2px 2px at 25px 25px, #ff6b6b, transparent),
+        radial-gradient(3px 3px at 75px 55px, #4ecdc4, transparent),
+        radial-gradient(2px 2px at 125px 15px, #45b7d1, transparent),
+        radial-gradient(3px 3px at 175px 75px, #96ceb4, transparent),
+        radial-gradient(2px 2px at 225px 35px, #ffeaa7, transparent),
+        radial-gradient(3px 3px at 275px 65px, #fd79a8, transparent),
+        radial-gradient(2px 2px at 325px 5px, #a29bfe, transparent),
+        radial-gradient(3px 3px at 375px 45px, #fd63f6, transparent),
+        radial-gradient(2px 2px at 425px 85px, #55a3ff, transparent),
+        radial-gradient(3px 3px at 475px 20px, #00b894, transparent);
+    background-repeat: repeat;
+    background-size: 500px 100px;
+}
+
+/* ゲームエリア内のアニメーション粒子 - 1層目 */
+.game-area::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(2px 2px at 20px 30px, #ff6b6b, transparent),
+        radial-gradient(3px 3px at 40px 70px, #4ecdc4, transparent),
+        radial-gradient(2px 2px at 90px 40px, #45b7d1, transparent),
+        radial-gradient(3px 3px at 130px 80px, #96ceb4, transparent),
+        radial-gradient(2px 2px at 160px 30px, #ffeaa7, transparent),
+        radial-gradient(3px 3px at 200px 60px, #fd79a8, transparent),
+        radial-gradient(2px 2px at 250px 90px, #a29bfe, transparent),
+        radial-gradient(3px 3px at 280px 25px, #fd63f6, transparent),
+        radial-gradient(2px 2px at 50px 100px, #55a3ff, transparent),
+        radial-gradient(3px 3px at 180px 15px, #00b894, transparent);
+    background-repeat: repeat;
+    background-size: 300px 120px;
+    animation: gameAreaParticleFall 7s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+    border-radius: 11px;
+}
+
+/* ゲームエリア内のアニメーション粒子 - 2層目 */
+.game-area::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(3px 3px at 80px 20px, #a29bfe, transparent),
+        radial-gradient(2px 2px at 120px 60px, #fd63f6, transparent),
+        radial-gradient(3px 3px at 170px 90px, #55a3ff, transparent),
+        radial-gradient(2px 2px at 220px 40px, #00b894, transparent),
+        radial-gradient(3px 3px at 270px 70px, #fdcb6e, transparent),
+        radial-gradient(2px 2px at 30px 85px, #e17055, transparent);
+    background-repeat: repeat;
+    background-size: 300px 120px;
+    animation: gameAreaParticleRain 5s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+    border-radius: 11px;
+}
+
+@keyframes gameAreaParticleFall {
+    0% { 
+        transform: translateY(-60px);
+        opacity: 0.8;
+    }
+    100% { 
+        transform: translateY(calc(100vh + 60px));
+        opacity: 0.1;
+    }
+}
+
+@keyframes gameAreaParticleRain {
+    0% { 
+        transform: translateY(-40px);
+        opacity: 0.6;
+    }
+    100% { 
+        transform: translateY(calc(100vh + 40px));
+        opacity: 0.05;
+    }
+}
+
+.ball:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    z-index: 100 !important; /* ホバー時は最前面に */
+    transition: all 0.2s ease;
+}
+
+.ball.size-small:hover {
+    transform: scale(1.15); /* 小さいボールはより大きく拡大 */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+}
+
+.ball.size-medium:hover {
+    transform: scale(1.1);
+}
+
+.ball {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle at 30% 30%, #ff9a9e, #ff6b6b, #ee5a52);
+    border: 3px solid rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #2c3e50;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.4),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8), 
+                 0 -1px 1px rgba(0, 0, 0, 0.2);
+    animation: floatBall 3s ease-in-out infinite;
+    position: absolute;
+    z-index: 3; /* 星空エフェクトの上に表示 */
+    opacity: 0.7; /* より強い半透明に変更 */
+    filter: brightness(1.1); /* 全体的に明るく */
+}
+
+/* 光沢効果を追加 */
+.ball::before {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 20%;
+    width: 30%;
+    height: 30%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.1) 70%, transparent 100%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* 浮遊アニメーション */
+@keyframes floatBall {
+    0%, 100% { 
+        transform: translateY(0px) rotate(0deg); 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    25% { 
+        transform: translateY(-3px) rotate(1deg); 
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+    }
+    50% { 
+        transform: translateY(-1px) rotate(0deg); 
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.23);
+    }
+    75% { 
+        transform: translateY(-4px) rotate(-1deg); 
+        box-shadow: 0 7px 14px rgba(0, 0, 0, 0.27);
+    }
+}
+
+/* 各ボールに異なるアニメーション遅延 */
+.ball:nth-child(2n) { animation-delay: -0.5s; }
+.ball:nth-child(3n) { animation-delay: -1s; }
+.ball:nth-child(4n) { animation-delay: -1.5s; }
+.ball:nth-child(5n) { animation-delay: -2s; }
+.ball:nth-child(6n) { animation-delay: -2.5s; }
+
+/* ボールサイズのバリエーション - 5種類に拡張 */
+.ball.size-small {
+    width: 100px;
+    height: 100px;
+    font-size: 1.3em;
+    z-index: 50; /* 最も上に表示 */
+}
+
+.ball.size-medium {
+    width: 150px;
+    height: 150px;
+    font-size: 1.8em;
+    z-index: 40;
+}
+
+.ball.size-large {
+    width: 200px;
+    height: 200px;
+    font-size: 2.3em;
+    z-index: 30;
+}
+
+.ball.size-xlarge {
+    width: 400px;
+    height: 400px;
+    font-size: 4.5em;
+    z-index: 20;
+}
+
+.ball.size-xxlarge {
+    width: 500px;
+    height: 500px;
+    font-size: 5.5em;
+    z-index: 10; /* 最も下に表示 */
+}
+
+/* ボールカラーのバリエーション - 明るく鮮やかに */
+.ball.color-red {
+    background: radial-gradient(circle at 30% 30%, #ff8fa3, #ff4757, #e55b3c);
+    box-shadow: 0 4px 8px rgba(255, 71, 87, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    filter: brightness(1.2);
+}
+
+.ball.color-blue {
+    background: radial-gradient(circle at 30% 30%, #74b9ff, #3742fa, #2f3542);
+    box-shadow: 0 4px 8px rgba(55, 66, 250, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    filter: brightness(1.2);
+}
+
+.ball.color-yellow {
+    background: radial-gradient(circle at 30% 30%, #ffeaa7, #ffdd59, #feca57);
+    box-shadow: 0 4px 8px rgba(255, 221, 89, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    filter: brightness(1.2);
+}
+
+.ball.color-green {
+    background: radial-gradient(circle at 30% 30%, #55efc4, #00d2d3, #01a3a4);
+    box-shadow: 0 4px 8px rgba(0, 210, 211, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    filter: brightness(1.2);
+}
+
+.ball.color-orange {
+    background: radial-gradient(circle at 30% 30%, #ff9ff3, #ff6348, #ff3838);
+    box-shadow: 0 4px 8px rgba(255, 99, 72, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    filter: brightness(1.2);
+}
+
+.ball.color-pink {
+    background: radial-gradient(circle at 30% 30%, #ff9ff3, #ff3838, #ff006e);
+    box-shadow: 0 4px 8px rgba(255, 56, 56, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    filter: brightness(1.2);
+}
+
+.ball.color-gray {
+    background: radial-gradient(circle at 30% 30%, #ddd6fe, #a29bfe, #6c5ce7);
+    box-shadow: 0 4px 8px rgba(162, 155, 254, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    filter: brightness(1.2);
+}
+
+.ball.color-brown {
+    background: radial-gradient(circle at 30% 30%, #fdcb6e, #e17055, #d63031);
+    box-shadow: 0 4px 8px rgba(225, 112, 85, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    filter: brightness(1.2);
+}
+
+.ball.color-purple {
+    background: radial-gradient(circle at 30% 30%, #fd79a8, #a29bfe, #6c5ce7);
+    box-shadow: 0 4px 8px rgba(162, 155, 254, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    filter: brightness(1.2);
+}
+
+.ball.color-lightpink {
+    background: radial-gradient(circle at 30% 30%, #ffeaa7, #ff7675, #fd79a8);
+    box-shadow: 0 4px 8px rgba(255, 118, 117, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    filter: brightness(1.2);
+}
+
+/* 図形の種類のスタイル */
+.ball.shape-circle {
+    border-radius: 50%;
+}
+
+.ball.shape-triangle {
+    border-radius: 0;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ball.shape-square {
+    border-radius: 10%;
+}
+
+.ball.shape-diamond {
+    border-radius: 0;
+    transform: rotate(45deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ball.shape-diamond .ball-content {
+    transform: rotate(-45deg);
+}
+
+/* 四角形とダイヤモンドの色を適用 */
+.ball.shape-square.color-red,
+.ball.shape-diamond.color-red {
+    background: linear-gradient(135deg, #ff6b9d, #e74c3c, #c0392b);
+}
+
+.ball.shape-square.color-blue,
+.ball.shape-diamond.color-blue {
+    background: linear-gradient(135deg, #74b9ff, #3498db, #2980b9);
+}
+
+.ball.shape-square.color-yellow,
+.ball.shape-diamond.color-yellow {
+    background: linear-gradient(135deg, #fdcb6e, #f1c40f, #f39c12);
+}
+
+.ball.shape-square.color-green,
+.ball.shape-diamond.color-green {
+    background: linear-gradient(135deg, #55efc4, #2ecc71, #27ae60);
+}
+
+.ball.shape-square.color-orange,
+.ball.shape-diamond.color-orange {
+    background: linear-gradient(135deg, #fd79a8, #e67e22, #d35400);
+}
+
+.ball.shape-square.color-pink,
+.ball.shape-diamond.color-pink {
+    background: linear-gradient(135deg, #fd79a8, #e91e63, #ad1457);
+}
+
+.ball.shape-square.color-gray,
+.ball.shape-diamond.color-gray {
+    background: linear-gradient(135deg, #bdc3c7, #95a5a6, #7f8c8d);
+}
+
+.ball.shape-square.color-brown,
+.ball.shape-diamond.color-brown {
+    background: linear-gradient(135deg, #d4a574, #8b4513, #654321);
+}
+
+.ball.shape-square.color-purple,
+.ball.shape-diamond.color-purple {
+    background: linear-gradient(135deg, #c39bd3, #9b59b6, #663399);
+}
+
+.ball.shape-square.color-lightpink,
+.ball.shape-diamond.color-lightpink {
+    background: linear-gradient(135deg, #ffb3d9, #ff69b4, #ff1493);
+}
+
+.ball:hover {
+    transform: scale(1.15) translateY(-8px) !important;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4),
+                inset 0 2px 0 rgba(255, 255, 255, 0.6),
+                inset 0 -2px 0 rgba(0, 0, 0, 0.15) !important;
+    z-index: 10;
+    animation: pulse 0.6s ease-in-out infinite alternate !important;
+    border-color: rgba(255, 255, 255, 1);
+    opacity: 1 !important; /* ホバー時は完全に不透明 */
+}
+
+.ball:hover::before {
+    opacity: 0.8;
+    transform: scale(1.2);
+}
+
+@keyframes pulse {
+    0% { 
+        transform: scale(1.15) translateY(-8px);
+        filter: brightness(1.1);
+    }
+    100% { 
+        transform: scale(1.2) translateY(-12px);
+        filter: brightness(1.3);
+    }
+}
+
+.ball.selected {
+    transform: scale(0.85);
+    opacity: 0.4;
+    animation: fadeOut 0.5s ease;
+    background: radial-gradient(circle at 30% 30%, #95a5a6, #7f8c8d, #34495e) !important;
+    filter: grayscale(50%);
+}
+
+.ball.selected::before {
+    opacity: 0.2;
+}
+
+.ball.correct {
+    animation: correctSelection 0.6s ease;
+    z-index: 5;
+    opacity: 1 !important; /* 正解時は完全に見える */
+}
+
+@keyframes correctSelection {
+    0% { transform: scale(1); }
+    30% { 
+        transform: scale(1.5); 
+        box-shadow: 0 0 30px rgba(46, 204, 113, 0.9),
+                    0 0 60px rgba(46, 204, 113, 0.6),
+                    inset 0 2px 0 rgba(255, 255, 255, 0.8);
+        z-index: 15;
+        filter: brightness(1.5);
+    }
+    70% {
+        transform: scale(1.3);
+        box-shadow: 0 0 25px rgba(46, 204, 113, 0.7),
+                    inset 0 2px 0 rgba(255, 255, 255, 0.6);
+        filter: brightness(1.3);
+    }
+    100% { 
+        transform: scale(0.8); 
+        opacity: 0.4;
+        filter: grayscale(50%);
+    }
+}
+
+/* パーティクル効果用のクラス */
+.particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle, #2ecc71, #27ae60);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: particleExplode 1s ease-out forwards;
+}
+
+@keyframes particleExplode {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--dx), var(--dy)) scale(0);
+        opacity: 0;
+    }
+}
+
+.ripple {
+    position: absolute;
+    border: 2px solid #2ecc71;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: rippleEffect 0.8s ease-out forwards;
+}
+
+@keyframes rippleEffect {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+    }
+    100% {
+        width: 200px;
+        height: 200px;
+        opacity: 0;
+    }
+}
+
+@keyframes fadeOut {
+    to { opacity: 0.5; }
+}
+
+.ball.wrong {
+    animation: wrongSelection 0.6s ease;
+    z-index: 5;
+    opacity: 1 !important; /* 間違い時もはっきり見える */
+}
+
+@keyframes wrongSelection {
+    0% { transform: scale(1); }
+    15% { 
+        transform: translateX(-8px) scale(1.1); 
+        box-shadow: 0 0 20px rgba(231, 76, 60, 0.8);
+    }
+    30% { transform: translateX(8px) scale(1.1); }
+    45% { transform: translateX(-5px) scale(1.05); }
+    60% { transform: translateX(5px) scale(1.05); }
+    75% { transform: translateX(-2px); }
+    100% { transform: translateX(0) scale(1); }
+}
+
+.result {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 40px;
+    border-radius: 20px;
+    margin-top: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.result::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: sparkle 3s linear infinite;
+}
+
+@keyframes sparkle {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.celebration-container {
+    position: relative;
+    z-index: 2;
+}
+
+.clear-title {
+    font-size: 3.5em;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    animation: bounceIn 1s ease-out;
+    background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+@keyframes bounceIn {
+    0% { 
+        transform: scale(0.3) rotate(-10deg);
+        opacity: 0;
+    }
+    50% { 
+        transform: scale(1.05) rotate(5deg);
+    }
+    70% { 
+        transform: scale(0.9) rotate(-2deg);
+    }
+    100% { 
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+.clear-subtitle {
+    font-size: 1.3em;
+    margin: 0 0 30px 0;
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 0.5s forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 30px 0;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.stat-item {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 15px 20px;
+    border-radius: 15px;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    min-width: 120px;
+    opacity: 0;
+    animation: slideInScale 0.8s ease-out forwards;
+}
+
+.stat-item:nth-child(1) { animation-delay: 0.8s; }
+.stat-item:nth-child(2) { animation-delay: 1.0s; }
+.stat-item:nth-child(3) { animation-delay: 1.2s; }
+
+@keyframes slideInScale {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    opacity: 0.9;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #FFD700;
+}
+
+.celebration-emojis {
+    margin: 30px 0;
+    opacity: 0;
+    animation: fadeIn 1s ease-out 1.5s forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.emoji {
+    font-size: 2em;
+    margin: 0 10px;
+    display: inline-block;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+.emoji:nth-child(1) { animation-delay: 0s; }
+.emoji:nth-child(2) { animation-delay: 0.2s; }
+.emoji:nth-child(3) { animation-delay: 0.4s; }
+.emoji:nth-child(4) { animation-delay: 0.6s; }
+.emoji:nth-child(5) { animation-delay: 0.8s; }
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-20px);
+    }
+    60% {
+        transform: translateY(-10px);
+    }
+}
+
+.play-again-btn {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    opacity: 0;
+    animation: slideUp 1s ease-out 2s forwards;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.play-again-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(45deg, #20c997, #28a745);
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    .container {
+        width: 98%;
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 1.8em;
+    }
+    
+    .info-panel {
+        flex-direction: column;
+        gap: 8px;
+        font-size: 0.9em;
+    }
+    
+    .game-area {
+        flex: 1;
+        padding: 8px;
+    }
+    
+    /* タブレットで確実に収まるサイズ - 5種類に拡張 */
+    .ball.size-small {
+        width: 70px;
+        height: 70px;
+        font-size: 1.0em;
+    }
+    
+    .ball.size-medium {
+        width: 100px;
+        height: 100px;
+        font-size: 1.3em;
+    }
+    
+    .ball.size-large {
+        width: 130px;
+        height: 130px;
+        font-size: 1.6em;
+    }
+    
+    .ball.size-xlarge {
+        width: 160px;
+        height: 160px;
+        font-size: 2.0em;
+    }
+    
+    .ball.size-xxlarge {
+        width: 180px;
+        height: 180px;
+        font-size: 2.2em;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        width: 100%;
+        padding: 8px;
+    }
+    
+    .game-area {
+        flex: 1;
+        margin: 5px 0;
+        padding: 6px;
+    }
+    
+    /* モバイルで確実に収まるサイズ - 5種類に拡張 */
+    .ball.size-small {
+        width: 60px;
+        height: 60px;
+        font-size: 0.9em;
+    }
+    
+    .ball.size-medium {
+        width: 80px;
+        height: 80px;
+        font-size: 1.1em;
+    }
+    
+    .ball.size-large {
+        width: 100px;
+        height: 100px;
+        font-size: 1.3em;
+    }
+    
+    .ball.size-xlarge {
+        width: 120px;
+        height: 120px;
+        font-size: 1.5em;
+    }
+    
+    .ball.size-xxlarge {
+        width: 140px;
+        height: 140px;
+        font-size: 1.7em;
+    }
+    
+    /* モバイル用クリア画面調整 */
+    .clear-title {
+        font-size: 2.5em;
+    }
+    
+    .clear-subtitle {
+        font-size: 1.1em;
+    }
+    
+    .result-stats {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .stat-item {
+        min-width: 200px;
+        margin-bottom: 10px;
+    }
+    
+    .emoji {
+        font-size: 1.5em;
+        margin: 0 5px;
+    }
+}
