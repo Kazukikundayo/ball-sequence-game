@@ -137,6 +137,11 @@ h1 {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* モバイル用1行レイアウト（デスクトップでは非表示） */
+.mobile-controls {
+    display: none;
+}
+
 .info-panel {
     display: flex;
     justify-content: space-around;
@@ -1034,104 +1039,141 @@ button {
     .container {
         width: 100vw;
         height: 100vh;
-        padding: 4px;
+        padding: 2px;
         margin: 0;
         border-radius: 0;
     }
     
-    /* タイトルを最小化 */
+    /* モバイルではタイトルを完全に非表示 */
     h1 {
-        font-size: 1.2em;
-        margin: 5px 0;
-        padding: 0;
+        display: none;
     }
     
-    /* 情報パネルを最小化 */
-    .info-panel {
-        padding: 5px;
-        margin-bottom: 5px;
-        font-size: 0.8em;
-        border-radius: 5px;
+    /* デスクトップ用UIを非表示 */
+    .info-panel, .controls {
+        display: none;
     }
     
-    /* ボタンエリアを最小化 */
-    .controls {
-        margin-bottom: 5px;
+    /* モバイル用1行レイアウトを表示 */
+    .mobile-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2px 4px;
+        margin-bottom: 2px;
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 3px;
+        font-size: 0.6em;
+        color: white;
+        height: 24px;
     }
     
-    .controls button {
-        padding: 6px 12px;
-        font-size: 0.8em;
-        margin: 0 3px;
+    .mobile-info {
+        display: flex;
+        gap: 8px;
+        flex: 1;
     }
     
-    /* ゲームエリアを最大化（画面の80%以上を占有） */
+    .mobile-info span {
+        white-space: nowrap;
+        font-size: 0.6em;
+    }
+    
+    .mobile-buttons {
+        display: flex;
+        gap: 2px;
+    }
+    
+    .mobile-buttons button {
+        padding: 2px 6px;
+        font-size: 0.5em;
+        margin: 0;
+        border-radius: 2px;
+        border: none;
+        background: #333;
+        color: white;
+        min-width: 30px;
+    }
+    
+    /* ゲームエリアを最大化（画面の98%を占有） */
     .game-area {
         flex: 1;
-        margin: 2px 0;
-        padding: 4px;
-        min-height: calc(100vh - 120px); /* タイトル+ボタン分を除いた最大高さ */
-        border-width: 2px;
+        margin: 0;
+        padding: 2px;
+        min-height: calc(100vh - 30px); /* モバイル1行UI分のみ除く */
+        border-width: 1px;
     }
     
-    /* モバイル用ボールサイズ：より小さく調整 */
+    /* モバイル用ボールサイズ：極小サイズ */
     .ball.size-small {
-        width: 45px;
-        height: 45px;
-        font-size: 0.7em;
+        width: 28px;
+        height: 28px;
+        font-size: 0.45em;
         font-weight: bold;
     }
     
     .ball.size-medium {
-        width: 60px;
-        height: 60px;
-        font-size: 0.9em;
+        width: 36px;
+        height: 36px;
+        font-size: 0.55em;
         font-weight: bold;
     }
     
     .ball.size-large {
-        width: 75px;
-        height: 75px;
-        font-size: 1.1em;
+        width: 44px;
+        height: 44px;
+        font-size: 0.65em;
         font-weight: bold;
     }
     
     .ball.size-xlarge {
-        width: 90px;
-        height: 90px;
-        font-size: 1.3em;
+        width: 52px;
+        height: 52px;
+        font-size: 0.75em;
         font-weight: bold;
     }
     
     .ball.size-xxlarge {
-        width: 105px;
-        height: 105px;
-        font-size: 1.5em;
+        width: 60px;
+        height: 60px;
+        font-size: 0.85em;
         font-weight: bold;
     }
     
     /* モバイル用クリア画面調整 */
+    .result {
+        padding: 10px;
+    }
+    
     .clear-title {
-        font-size: 1.8em;
+        font-size: 1.5em;
+        margin-bottom: 5px;
     }
     
     .clear-subtitle {
-        font-size: 0.9em;
+        font-size: 0.8em;
+        margin-bottom: 8px;
     }
     
     .result-stats {
         flex-direction: column;
         align-items: center;
+        gap: 5px;
     }
     
     .stat-item {
-        min-width: 200px;
-        margin-bottom: 8px;
-        font-size: 0.9em;
+        min-width: 180px;
+        margin-bottom: 5px;
+        font-size: 0.8em;
     }
     
     .emoji {
-        font-size: 1.2em;
-        margin: 0 3px;
+        font-size: 1.0em;
+        margin: 0 2px;
+    }
+    
+    .play-again-btn {
+        padding: 8px 16px;
+        font-size: 0.9em;
     }
 }

@@ -31,7 +31,7 @@ const sizePixels = {
 function getActualBallSize(size) {
     if (window.innerWidth <= 480) {
         const mobileSizes = { 
-            'small': 45, 'medium': 60, 'large': 75, 'xlarge': 90, 'xxlarge': 105
+            'small': 28, 'medium': 36, 'large': 44, 'xlarge': 52, 'xxlarge': 60
         };
         return mobileSizes[size];
     } else if (window.innerWidth <= 768) {
@@ -61,7 +61,14 @@ const elements = {
     playAgainBtn: document.getElementById('play-again-btn'),
     backgroundMusic: document.getElementById('background-music'),
     clickSound: document.getElementById('click-sound'),
-    clearSound: document.getElementById('clear-sound')
+    clearSound: document.getElementById('clear-sound'),
+    // モバイル用要素
+    timerMobile: document.getElementById('timer-mobile'),
+    nextNumberMobile: document.getElementById('next-number-mobile'),
+    scoreMobile: document.getElementById('score-mobile'),
+    startBtnMobile: document.getElementById('start-btn-mobile'),
+    resetBtnMobile: document.getElementById('reset-btn-mobile'),
+    musicBtnMobile: document.getElementById('music-btn-mobile')
 };
 
 // デバッグ用：要素の存在確認
@@ -523,13 +530,20 @@ function stopTimer() {
 // UI更新
 function updateUI() {
     const totalTime = gameState.elapsedTime + gameState.penaltyTime;
-    elements.timer.textContent = totalTime.toFixed(2);
-    elements.nextNumber.textContent = gameState.currentNumber;
-    elements.score.textContent = `${gameState.score}/${gameState.totalBalls}`;
+    
+    // デスクトップ用UI更新
+    if (elements.timer) elements.timer.textContent = totalTime.toFixed(2);
+    if (elements.nextNumber) elements.nextNumber.textContent = gameState.currentNumber;
+    if (elements.score) elements.score.textContent = `${gameState.score}/${gameState.totalBalls}`;
+    
+    // モバイル用UI更新
+    if (elements.timerMobile) elements.timerMobile.textContent = totalTime.toFixed(1);
+    if (elements.nextNumberMobile) elements.nextNumberMobile.textContent = gameState.currentNumber;
+    if (elements.scoreMobile) elements.scoreMobile.textContent = `${gameState.score}/${gameState.totalBalls}`;
     
     const progress = gameState.score / gameState.totalBalls;
     const hue = progress * 120; // 0 (red) to 120 (green)
-    elements.score.style.color = `hsl(${hue}, 100%, 50%)`;
+    if (elements.score) elements.score.style.color = `hsl(${hue}, 100%, 50%)`;
 }
 
 // タイムアウト機能
@@ -662,6 +676,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     elements.resetBtn.addEventListener('click', resetGame);
     elements.musicBtn.addEventListener('click', toggleBackgroundMusic);
+    
+    // モバイル用ボタンのイベントリスナー
+    if (elements.startBtnMobile) {
+        elements.startBtnMobile.addEventListener('click', function() {
+            console.log('Mobile start button clicked');
+            startGame();
+        });
+    }
+    if (elements.resetBtnMobile) {
+        elements.resetBtnMobile.addEventListener('click', resetGame);
+    }
+    if (elements.musicBtnMobile) {
+        elements.musicBtnMobile.addEventListener('click', toggleBackgroundMusic);
+    }
+    
     elements.playAgainBtn.addEventListener('click', () => {
         elements.result.style.display = 'none';
         resetGame();

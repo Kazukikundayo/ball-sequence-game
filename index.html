@@ -47,6 +47,19 @@
             <button id="reset-btn">リセット</button>
             <button id="music-btn" class="music-control">🎵 音楽ON/OFF</button>
         </div>
+        <!-- モバイル用：情報パネルとボタンを1行に配置 -->
+        <div class="mobile-controls">
+            <div class="mobile-info">
+                <span class="timer">⏱️<span id="timer-mobile">0.00</span>s</span>
+                <span class="next-number">次:<span id="next-number-mobile">1</span></span>
+                <span class="score">得点:<span id="score-mobile">0</span>/20</span>
+            </div>
+            <div class="mobile-buttons">
+                <button id="start-btn-mobile">開始</button>
+                <button id="reset-btn-mobile">終了</button>
+                <button id="music-btn-mobile">🎵</button>
+            </div>
+        </div>
         <div class="game-area" id="game-area">
             <!-- ボールがここに動的に生成されます -->
         </div>
