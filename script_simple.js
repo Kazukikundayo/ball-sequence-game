@@ -31,7 +31,7 @@ const sizePixels = {
 function getActualBallSize(size) {
     if (window.innerWidth <= 480) {
         const mobileSizes = { 
-            'small': 28, 'medium': 36, 'large': 44, 'xlarge': 52, 'xxlarge': 60
+            'small': 35, 'medium': 45, 'large': 55, 'xlarge': 65, 'xxlarge': 75
         };
         return mobileSizes[size];
     } else if (window.innerWidth <= 768) {

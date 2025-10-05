@@ -1054,126 +1054,151 @@ button {
         display: none;
     }
     
-    /* モバイル用1行レイアウトを表示 */
+    /* モバイル用1行レイアウトを表示 - サイズアップ */
     .mobile-controls {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 2px 4px;
-        margin-bottom: 2px;
-        background: rgba(0, 0, 0, 0.8);
-        border-radius: 3px;
-        font-size: 0.6em;
+        padding: 4px 6px;
+        margin-bottom: 3px;
+        background: rgba(0, 0, 0, 0.9);
+        border-radius: 5px;
+        font-size: 0.9em; /* 0.6em → 0.9em に拡大 */
         color: white;
-        height: 24px;
+        height: 36px; /* 24px → 36px に拡大 */
+        border: 1px solid rgba(255, 255, 255, 0.3);
     }
     
     .mobile-info {
         display: flex;
-        gap: 8px;
+        gap: 12px; /* 8px → 12px に拡大 */
         flex: 1;
     }
     
     .mobile-info span {
         white-space: nowrap;
-        font-size: 0.6em;
+        font-size: 0.9em; /* 0.6em → 0.9em に拡大 */
+        font-weight: bold;
     }
     
     .mobile-buttons {
         display: flex;
-        gap: 2px;
+        gap: 4px; /* 2px → 4px に拡大 */
     }
     
     .mobile-buttons button {
-        padding: 2px 6px;
-        font-size: 0.5em;
+        padding: 4px 8px; /* 2px 6px → 4px 8px に拡大 */
+        font-size: 0.8em; /* 0.5em → 0.8em に拡大 */
         margin: 0;
-        border-radius: 2px;
-        border: none;
-        background: #333;
+        border-radius: 4px;
+        border: 1px solid #555;
+        background: #444;
         color: white;
-        min-width: 30px;
+        min-width: 40px; /* 30px → 40px に拡大 */
+        font-weight: bold;
     }
     
-    /* ゲームエリアを最大化（画面の98%を占有） */
+    .mobile-buttons button:active {
+        background: #666;
+        transform: scale(0.95);
+    }
+    
+    /* ゲームエリアを最大化（UIサイズ増加分を調整） */
     .game-area {
         flex: 1;
         margin: 0;
-        padding: 2px;
-        min-height: calc(100vh - 30px); /* モバイル1行UI分のみ除く */
+        padding: 3px;
+        min-height: calc(100vh - 45px); /* 30px → 45px に調整 */
         border-width: 1px;
     }
     
-    /* モバイル用ボールサイズ：極小サイズ */
+    /* モバイル用ボールサイズ：視認性重視で拡大 */
     .ball.size-small {
-        width: 28px;
-        height: 28px;
-        font-size: 0.45em;
+        width: 35px; /* 28px → 35px */
+        height: 35px;
+        font-size: 0.7em; /* 0.45em → 0.7em に拡大 */
         font-weight: bold;
+        line-height: 35px;
     }
     
     .ball.size-medium {
-        width: 36px;
-        height: 36px;
-        font-size: 0.55em;
+        width: 45px; /* 36px → 45px */
+        height: 45px;
+        font-size: 0.9em; /* 0.55em → 0.9em に拡大 */
         font-weight: bold;
+        line-height: 45px;
     }
     
     .ball.size-large {
-        width: 44px;
-        height: 44px;
-        font-size: 0.65em;
+        width: 55px; /* 44px → 55px */
+        height: 55px;
+        font-size: 1.1em; /* 0.65em → 1.1em に拡大 */
         font-weight: bold;
+        line-height: 55px;
     }
     
     .ball.size-xlarge {
-        width: 52px;
-        height: 52px;
-        font-size: 0.75em;
+        width: 65px; /* 52px → 65px */
+        height: 65px;
+        font-size: 1.3em; /* 0.75em → 1.3em に拡大 */
         font-weight: bold;
+        line-height: 65px;
     }
     
     .ball.size-xxlarge {
-        width: 60px;
-        height: 60px;
-        font-size: 0.85em;
+        width: 75px; /* 60px → 75px */
+        height: 75px;
+        font-size: 1.5em; /* 0.85em → 1.5em に拡大 */
         font-weight: bold;
+        line-height: 75px;
+    }
+    
+    /* ボール内の数字を強調 */
+    .ball {
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        border: 2px solid rgba(255, 255, 255, 0.5);
+    }
+    
+    .ball:hover, .ball:active {
+        transform: scale(1.1);
+        border: 2px solid rgba(255, 255, 255, 0.9);
     }
     
     /* モバイル用クリア画面調整 */
     .result {
-        padding: 10px;
+        padding: 15px;
     }
     
     .clear-title {
-        font-size: 1.5em;
-        margin-bottom: 5px;
+        font-size: 2.0em; /* 1.5em → 2.0em に拡大 */
+        margin-bottom: 8px;
     }
     
     .clear-subtitle {
-        font-size: 0.8em;
-        margin-bottom: 8px;
+        font-size: 1.0em; /* 0.8em → 1.0em に拡大 */
+        margin-bottom: 10px;
     }
     
     .result-stats {
         flex-direction: column;
         align-items: center;
-        gap: 5px;
+        gap: 8px;
     }
     
     .stat-item {
-        min-width: 180px;
-        margin-bottom: 5px;
-        font-size: 0.8em;
+        min-width: 200px;
+        margin-bottom: 8px;
+        font-size: 1.0em; /* 0.8em → 1.0em に拡大 */
     }
     
     .emoji {
-        font-size: 1.0em;
-        margin: 0 2px;
+        font-size: 1.5em; /* 1.0em → 1.5em に拡大 */
+        margin: 0 4px;
     }
     
     .play-again-btn {
-        padding: 8px 16px;
-        font-size: 0.9em;
+        padding: 12px 24px; /* 8px 16px → 12px 24px に拡大 */
+        font-size: 1.1em; /* 0.9em → 1.1em に拡大 */
+        font-weight: bold;
     }
 }
