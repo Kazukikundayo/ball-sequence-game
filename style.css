@@ -1091,30 +1091,32 @@ button {
         border-radius: 0;
     }
     
-    /* モバイル用1行レイアウト - iPhone専用調整 */
+    /* モバイル用1行レイアウト - iPhone専用調整：文字サイズ大幅拡大 */
     .mobile-controls {
-        padding: 4px 6px;
-        margin-bottom: 3px;
-        font-size: 0.9em;
-        height: 36px;
+        padding: 6px 10px;
+        margin-bottom: 4px;
+        font-size: 1.4em; /* 0.9em → 1.4em に大幅拡大 */
+        height: 50px; /* 36px → 50px に拡大 */
     }
     
     .mobile-info {
-        gap: 12px;
+        gap: 15px; /* 12px → 15px */
     }
     
     .mobile-info span {
-        font-size: 0.9em;
+        font-size: 1.3em; /* 0.9em → 1.3em に大幅拡大 */
+        font-weight: bold;
     }
     
     .mobile-buttons {
-        gap: 4px;
+        gap: 6px; /* 4px → 6px */
     }
     
     .mobile-buttons button {
-        padding: 4px 8px;
-        font-size: 0.8em;
-        min-width: 40px;
+        padding: 8px 12px; /* 4px 8px → 8px 12px に拡大 */
+        font-size: 1.1em; /* 0.8em → 1.1em に大幅拡大 */
+        min-width: 55px; /* 40px → 55px */
+        font-weight: bold;
     }
     
     /* ゲームエリアを最大化（UIサイズ増加分を調整） */
@@ -1122,49 +1124,49 @@ button {
         flex: 1;
         margin: 0;
         padding: 3px;
-        min-height: calc(100vh - 45px); /* 30px → 45px に調整 */
+        min-height: calc(100vh - 60px); /* 45px → 60px に調整（UI拡大分） */
         border-width: 1px;
     }
     
-    /* モバイル用ボールサイズ：視認性重視で拡大 */
+    /* モバイル用ボールサイズ：視認性重視でさらに拡大 */
     .ball.size-small {
-        width: 35px; /* 28px → 35px */
-        height: 35px;
-        font-size: 0.7em; /* 0.45em → 0.7em に拡大 */
+        width: 50px; /* 35px → 50px にさらに拡大 */
+        height: 50px;
+        font-size: 1.0em; /* 0.7em → 1.0em にさらに拡大 */
         font-weight: bold;
-        line-height: 35px;
+        line-height: 50px;
     }
     
     .ball.size-medium {
-        width: 45px; /* 36px → 45px */
-        height: 45px;
-        font-size: 0.9em; /* 0.55em → 0.9em に拡大 */
-        font-weight: bold;
-        line-height: 45px;
-    }
-    
-    .ball.size-large {
-        width: 55px; /* 44px → 55px */
-        height: 55px;
-        font-size: 1.1em; /* 0.65em → 1.1em に拡大 */
-        font-weight: bold;
-        line-height: 55px;
-    }
-    
-    .ball.size-xlarge {
-        width: 65px; /* 52px → 65px */
+        width: 65px; /* 45px → 65px にさらに拡大 */
         height: 65px;
-        font-size: 1.3em; /* 0.75em → 1.3em に拡大 */
+        font-size: 1.3em; /* 0.9em → 1.3em にさらに拡大 */
         font-weight: bold;
         line-height: 65px;
     }
     
-    .ball.size-xxlarge {
-        width: 75px; /* 60px → 75px */
-        height: 75px;
-        font-size: 1.5em; /* 0.85em → 1.5em に拡大 */
+    .ball.size-large {
+        width: 80px; /* 55px → 80px にさらに拡大 */
+        height: 80px;
+        font-size: 1.6em; /* 1.1em → 1.6em にさらに拡大 */
         font-weight: bold;
-        line-height: 75px;
+        line-height: 80px;
+    }
+    
+    .ball.size-xlarge {
+        width: 95px; /* 65px → 95px にさらに拡大 */
+        height: 95px;
+        font-size: 1.9em; /* 1.3em → 1.9em にさらに拡大 */
+        font-weight: bold;
+        line-height: 95px;
+    }
+    
+    .ball.size-xxlarge {
+        width: 110px; /* 75px → 110px にさらに拡大 */
+        height: 110px;
+        font-size: 2.2em; /* 1.5em → 2.2em にさらに拡大 */
+        font-weight: bold;
+        line-height: 110px;
     }
     
     /* ボール内の数字を強調 */
