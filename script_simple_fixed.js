@@ -260,7 +260,9 @@ function handleBallClick(number, ballElement) {
     
     if (number === gameState.currentNumber) {
         playClickSound();
-        ballElement.style.visibility = 'hidden';
+        ballElement.style.opacity = '0';
+        ballElement.style.transform = 'scale(0.8)';
+        ballElement.style.pointerEvents = 'none';
         gameState.currentNumber++;
         gameState.score++;
         

@@ -19,14 +19,14 @@ body {
     justify-content: center;
     align-items: center;
     background-image: url('cat.png');
-    background-size: cover;
+    background-size: 80%; /* 画像サイズを調整してより見えやすく */
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
 
 .container {
-    background: rgba(255, 255, 255, 0.05); /* さらに透明にして背景を見えやすく */
+    background: rgba(255, 255, 255, 0.02); /* さらに透明にして背景を見えやすく */
     border-radius: 20px;
     padding: 15px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
@@ -35,9 +35,9 @@ body {
     text-align: center;
     display: flex;
     flex-direction: column;
-    -webkit-backdrop-filter: blur(5px); /* ブラーを軽減 */
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    -webkit-backdrop-filter: blur(2px); /* ブラーを軽減 */
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 h1 {
@@ -416,7 +416,7 @@ button {
     width: 100%;
     max-width: 600px; /* グリッドの最大サイズ */
     flex: 1;
-    background: rgba(248, 249, 250, 0.1); /* シンプルな半透明背景 */
+    background: transparent; /* 背景を透明に変更 */
     border: 3px solid rgba(255, 255, 255, 0.3);
     border-radius: 15px;
     margin: 10px 0;
@@ -462,7 +462,7 @@ button {
     font-weight: bold;
     color: #2c3e50;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.5s ease; /* トランジション時間を延長 */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25), 
                 inset 0 1px 0 rgba(255, 255, 255, 0.4),
                 inset 0 -1px 0 rgba(0, 0, 0, 0.1);
@@ -474,7 +474,7 @@ button {
                  0 -2px 2px rgba(0, 0, 0, 0.3); /* テキストシャドウも強化 */
     animation: floatBall 3s ease-in-out infinite;
     z-index: 3; /* 星空エフェクトの上に表示 */
-    opacity: 0.95; /* 透明度を調整 */
+    opacity: 1; /* 完全に不透明に変更 */
     filter: brightness(1.1); /* 全体的に明るく */
 }
 
