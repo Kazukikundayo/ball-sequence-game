@@ -589,6 +589,9 @@ async function showRanking(isGitHubMode = null, message = '', page = 1) {
         
         // GitHub トークンが設定されているかチェック
         const githubToken = localStorage.getItem('github_token');
+        console.log('GitHub Token:', githubToken ? '設定済み' : '未設定');
+        console.log('GitHub Ranking System:', typeof githubRanking !== 'undefined' ? '利用可能' : '未読み込み');
+        console.log('isGitHubMode:', isGitHubMode);
         
         if (githubToken && typeof githubRanking !== 'undefined' && isGitHubMode !== false) {
             try {
@@ -596,7 +599,7 @@ async function showRanking(isGitHubMode = null, message = '', page = 1) {
                 const gitHubData = await githubRanking.fetchRankingsFromGitHub();
                 rankingData = gitHubData;
                 dataSource = '⚡ 反射神経ランキング';
-                console.log('反射神経ランキング取得成功');
+                console.log('反射神経ランキング取得成功:', rankingData.rankings.length, '件');
             } catch (error) {
                 console.warn('反射神経ランキング取得失敗、ローカルデータを使用:', error);
                 const localData = JSON.parse(localStorage.getItem('gameRanking')) || { rankings: [] };
@@ -671,9 +674,12 @@ async function showRanking(isGitHubMode = null, message = '', page = 1) {
             if (totalPages > 1) {
                 rankingHTML += '<div class="pagination-controls">';
                 
+                // 現在のモードを確実に判定
+                const currentMode = (githubToken && typeof githubRanking !== 'undefined' && isGitHubMode !== false) ? 'true' : 'false';
+                
                 // 前のページボタン
                 if (currentPage > 1) {
-                    rankingHTML += `<button onclick="showRanking(${isGitHubMode}, '${message}', ${currentPage - 1})" class="page-btn">◀ 前のページ</button>`;
+                    rankingHTML += `<button onclick="showRanking(${currentMode}, '', ${currentPage - 1})" class="page-btn">◀ 前のページ</button>`;
                 }
                 
                 // ページ番号ボタン
@@ -681,13 +687,13 @@ async function showRanking(isGitHubMode = null, message = '', page = 1) {
                     if (i === currentPage) {
                         rankingHTML += `<button class="page-btn current-page">${i}</button>`;
                     } else {
-                        rankingHTML += `<button onclick="showRanking(${isGitHubMode}, '${message}', ${i})" class="page-btn">${i}</button>`;
+                        rankingHTML += `<button onclick="showRanking(${currentMode}, '', ${i})" class="page-btn">${i}</button>`;
                     }
                 }
                 
                 // 次のページボタン
                 if (currentPage < totalPages) {
-                    rankingHTML += `<button onclick="showRanking(${isGitHubMode}, '${message}', ${currentPage + 1})" class="page-btn">次のページ ▶</button>`;
+                    rankingHTML += `<button onclick="showRanking(${currentMode}, '', ${currentPage + 1})" class="page-btn">次のページ ▶</button>`;
                 }
                 
                 rankingHTML += '</div>';
@@ -1062,11 +1068,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // ランキングボタン
     if (elements.rankingBtn) {
-        elements.rankingBtn.addEventListener('click', showRanking);
+        elements.rankingBtn.addEventListener('click', () => showRanking());
     }
     
     if (elements.rankingBtnMobile) {
-        elements.rankingBtnMobile.addEventListener('click', showRanking);
+        elements.rankingBtnMobile.addEventListener('click', () => showRanking());
     }
     
     // テスト音ボタン
