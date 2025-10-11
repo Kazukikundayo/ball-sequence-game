@@ -544,7 +544,7 @@ function saveToLocalStorageOnly(newScore, playerName) {
         
         rankingData.rankings.push(newRanking);
         rankingData.rankings.sort((a, b) => a.finalScore - b.finalScore);
-        rankingData.rankings = rankingData.rankings.slice(0, 50);
+        rankingData.rankings = rankingData.rankings.slice(0, 20); // 50から20に変更（表示は10位だが予備も保持）
         rankingData.lastUpdated = new Date().toISOString();
         rankingData.totalPlayers = rankingData.rankings.length;
         
@@ -612,7 +612,7 @@ async function showRanking(isGitHubMode = null, message = '') {
             rankingHTML += '<thead><tr><th>順位</th><th>名前</th><th>時間</th><th>正解率</th><th>日時</th></tr></thead>';
             rankingHTML += '<tbody>';
             
-            const topRankings = rankingData.rankings.slice(0, 20);
+            const topRankings = rankingData.rankings.slice(0, 10); // 20位から10位に変更
             topRankings.forEach((ranking, index) => {
                 const playDate = ranking.date || new Date(ranking.playDate || ranking.timestamp).toLocaleDateString('ja-JP');
                 const finalTime = ranking.finalTime || ranking.finalScore;
@@ -664,7 +664,7 @@ function showBasicLocalRanking(rankingData) {
         rankingHTML += '<thead><tr><th>順位</th><th>名前</th><th>時間</th><th>正解率</th><th>日時</th></tr></thead>';
         rankingHTML += '<tbody>';
         
-        const topRankings = rankingData.rankings.slice(0, 20);
+        const topRankings = rankingData.rankings.slice(0, 10); // 20位から10位に変更
         topRankings.forEach((ranking, index) => {
             const playDate = new Date(ranking.playDate).toLocaleDateString('ja-JP');
             rankingHTML += `
