@@ -290,7 +290,7 @@ button {
 }
 
 .ball {
-    position: relative; /* absoluteからrelativeに変更 */
+    position: relative; /* absoluteからrelativeに変更 - パネル重なり問題解決 */
     width: 100%; /* グリッドセルに合わせて100%に */
     height: 100%; /* グリッドセルに合わせて100%に */
     min-height: 60px; /* 最小サイズを保証 */
