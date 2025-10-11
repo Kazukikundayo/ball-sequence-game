@@ -154,7 +154,7 @@ h1 {
 .game-info {
     display: none; /* 初期状態では非表示 */
     position: absolute;
-    bottom: 10px; /* 上部から下部に変更 */
+    top: 10px; /* 下部から上部に変更 */
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
@@ -221,7 +221,7 @@ h1 {
     
     .game-info {
         position: fixed;
-        bottom: 5px; /* top から bottom に変更 */
+        top: 5px; /* bottom から top に変更 */
         left: 5px;
         right: 5px;
         transform: none;
@@ -229,9 +229,11 @@ h1 {
     }
     
     .game-info .info-panel {
-        flex-direction: column;
-        gap: 5px;
-        font-size: 0.9em;
+        flex-direction: row; /* columnからrowに変更して横並びに */
+        flex-wrap: wrap; /* 折り返しを許可 */
+        gap: 8px; /* ギャップを少し広げる */
+        font-size: 0.8em; /* フォントサイズを小さく */
+        justify-content: space-between; /* 要素を均等配置 */
     }
 }
 
@@ -1033,7 +1035,7 @@ button {
     /* タブレット用：ゲームエリアを重視 */
     .container {
         width: 100%;
-        padding: 6px;
+        padding: 60px 6px 6px 6px; /* トップパディングを追加してゲーム情報パネル用スペース確保 */
         height: 100vh;
     }
     
@@ -1074,7 +1076,7 @@ button {
     .container {
         width: 100vw;
         height: 100vh;
-        padding: 2px;
+        padding: 55px 2px 2px 2px; /* トップパディングを追加 */
         margin: 0;
         border-radius: 0;
     }
@@ -1115,6 +1117,21 @@ button {
         min-height: calc(100vh - 50px); /* UIサイズに合わせて調整 */
         border-width: 1px;
         gap: 3px; /* モバイルでは隙間を小さく */
+    }
+    
+    /* 480px以下でのゲーム情報パネル調整 */
+    .game-info {
+        padding: 5px;
+        font-size: 0.7em;
+    }
+    
+    .game-info .info-panel {
+        gap: 5px;
+        font-size: 0.7em;
+    }
+    
+    .game-info .info-panel > div {
+        white-space: nowrap; /* テキストが折り返されないように */
     }
     
     /* モバイル用ボールスタイル：グリッドに合わせて調整 */
