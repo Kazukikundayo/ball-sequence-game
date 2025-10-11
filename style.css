@@ -1044,7 +1044,7 @@ button {
     /* タブレット用：ゲームエリアを重視 */
     .container {
         width: 100%;
-        padding: 6px 6px 75px 6px; /* ボトムパディングを追加してゲーム情報パネル用スペース確保 */
+        padding: 6px 6px 85px 6px; /* ボトムパディングを拡大してゲーム情報パネル用スペース確保 */
         height: 100vh;
     }
     
@@ -1068,7 +1068,8 @@ button {
     .game-area {
         flex: 1;
         padding: 8px;
-        min-height: calc(100vh - 70px); /* 1行UI分を除く */
+        min-height: calc(100vh - 90px); /* ゲーム情報パネル分を考慮 */
+        max-height: calc(100vh - 90px); /* 最大高さも制限 */
         gap: 6px; /* タブレットでは中間のギャップ */
     }
     
@@ -1085,7 +1086,7 @@ button {
     .container {
         width: 100vw;
         height: 100vh;
-        padding: 2px 2px 55px 2px; /* ボトムパディングに変更 */
+        padding: 2px 2px 70px 2px; /* ボトムパディングを拡大 */
         margin: 0;
         border-radius: 0;
     }
@@ -1123,7 +1124,8 @@ button {
         flex: 1;
         margin: 0;
         padding: 3px;
-        min-height: calc(100vh - 50px); /* UIサイズに合わせて調整 */
+        min-height: calc(100vh - 80px); /* ゲーム情報パネル分の高さを考慮 */
+        max-height: calc(100vh - 80px); /* 最大高さも制限 */
         border-width: 1px;
         gap: 3px; /* モバイルでは隙間を小さく */
     }
@@ -1688,5 +1690,38 @@ button {
     
     .game-area {
         gap: 2px; /* グリッドの隙間をさらに小さく */
+    }
+}
+
+/* 超小型スクリーン（iPhone SE等）対応 */
+@media (max-width: 320px) {
+    .container {
+        padding: 1px 1px 75px 1px; /* より大きなボトムパディング */
+    }
+    
+    .game-area {
+        min-height: calc(100vh - 90px); /* さらに保守的な高さ設定 */
+        max-height: calc(100vh - 90px);
+        gap: 2px; /* 隙間をさらに小さく */
+        padding: 2px;
+    }
+    
+    .game-info {
+        padding: 6px; /* パディングを更に縮小 */
+        min-height: 25px; /* 最小高さを縮小 */
+    }
+    
+    .game-info .info-panel {
+        gap: 5px; /* ギャップを縮小 */
+        font-size: 0.9em; /* フォントサイズを調整 */
+    }
+    
+    .game-info span {
+        font-size: 1.1em; /* 数値のフォントサイズを調整 */
+    }
+    
+    .reset-btn {
+        padding: 4px 8px; /* ボタンパディングを縮小 */
+        font-size: 0.8em;
     }
 }
