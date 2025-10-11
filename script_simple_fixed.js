@@ -23,6 +23,7 @@ const elements = {
     timer: document.getElementById('timer'),
     nextNumber: document.getElementById('next-number'),
     score: document.getElementById('score'),
+    bestScore: document.getElementById('best-score'),
     gameArea: document.getElementById('game-area'),
     result: document.getElementById('result'),
     finalTime: document.getElementById('final-time'),
@@ -102,8 +103,54 @@ function playClickSound() {
     }
 }
 
+// ベストスコア初期化（ゲーム開始時に呼ばれる）
+async function initializeBestScore() {
+    try {
+        // ローカルベストスコアを取得
+        getLocalBestScore();
+        
+        // ベストスコア表示も更新
+        updateBestScoreDisplay();
+        
+        // GitHub接続がある場合、バックグラウンドで最新データを取得
+        const githubToken = localStorage.getItem('github_token');
+        if (githubToken && typeof githubRanking !== 'undefined') {
+            // タイムアウト付きでGitHub記録を取得
+            Promise.race([
+                getGitHubBestScore(),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('初期化タイムアウト')), 2000))
+            ]).then(githubBest => {
+                if (githubBest) {
+                    const currentLocal = parseFloat(localStorage.getItem('localBestScore') || 'Infinity');
+                    if (githubBest < currentLocal) {
+                        localStorage.setItem('localBestScore', githubBest.toString());
+                        console.log('GitHub記録でローカルベスト更新:', githubBest);
+                        updateBestScoreDisplay(); // 表示も更新
+                    }
+                }
+            }).catch(error => {
+                console.log('GitHub記録初期化失敗（問題なし）:', error.message);
+            });
+        }
+    } catch (error) {
+        console.error('ベストスコア初期化エラー:', error);
+    }
+}
+
+// ベストスコア表示更新
+function updateBestScoreDisplay() {
+    const bestScore = getLocalBestScore();
+    if (elements.bestScore) {
+        if (bestScore !== null) {
+            elements.bestScore.textContent = bestScore.toFixed(2);
+        } else {
+            elements.bestScore.textContent = '--';
+        }
+    }
+}
+
 // ゲーム開始
-function startGame() {
+async function startGame() {
     if (gameState.isPlaying) {
         return;
     }
@@ -112,6 +159,9 @@ function startGame() {
         elements.clearSound.pause();
         elements.clearSound.currentTime = 0;
     }
+    
+    // ベストスコアを事前に取得してキャッシュ
+    await initializeBestScore();
     
     gameState.isPlaying = true;
     gameState.startTime = Date.now();
@@ -321,12 +371,105 @@ function showResult() {
     elements.result.style.display = 'flex';
 }
 
-function showNameInputForm() {
-    const playerName = prompt(`🎉 ゲームクリアおめでとうございます！ 🎉\n\n⏱️ クリア時間: ${gameState.lastScore.finalScore.toFixed(2)}秒\n🎯 正解率: ${gameState.lastScore.accuracy}%\n\n🏆 ランキングに登録しますか？\n名前を入力してください（キャンセルでスキップ）:`);
+// 新記録判定（ローカルキャッシュとGitHubの両方をチェック）
+async function checkIfNewRecord(newScore) {
+    try {
+        // まずローカルキャッシュから最高記録を取得
+        const localBest = getLocalBestScore();
+        let isNewRecord = false;
+        
+        // ローカルでの新記録判定
+        if (!localBest || newScore.finalScore < localBest) {
+            isNewRecord = true;
+            console.log('ローカル新記録:', newScore.finalScore, 'vs 旧記録:', localBest);
+        }
+        
+        // GitHub同期がある場合の判定
+        const githubToken = localStorage.getItem('github_token');
+        if (githubToken && typeof githubRanking !== 'undefined') {
+            try {
+                // GitHub上の最高記録も確認（ただしタイムアウト付き）
+                const githubBest = await Promise.race([
+                    getGitHubBestScore(),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('タイムアウト')), 3000))
+                ]);
+                
+                if (githubBest && newScore.finalScore < githubBest) {
+                    isNewRecord = true;
+                    console.log('GitHub新記録:', newScore.finalScore, 'vs GitHub記録:', githubBest);
+                }
+            } catch (error) {
+                console.log('GitHub記録取得失敗、ローカル判定を使用:', error.message);
+            }
+        }
+        
+        // 新記録の場合、ローカルキャッシュを更新
+        if (isNewRecord) {
+            localStorage.setItem('localBestScore', newScore.finalScore.toString());
+        }
+        
+        return isNewRecord;
+        
+    } catch (error) {
+        console.error('新記録判定エラー:', error);
+        return false;
+    }
+}
+
+// ローカルベストスコア取得
+function getLocalBestScore() {
+    const stored = localStorage.getItem('localBestScore');
+    if (stored) return parseFloat(stored);
+    
+    // ローカルランキングからも確認
+    const rankingData = JSON.parse(localStorage.getItem('gameRanking') || '{"rankings":[]}');
+    if (rankingData.rankings && rankingData.rankings.length > 0) {
+        const best = Math.min(...rankingData.rankings.map(r => r.finalScore));
+        localStorage.setItem('localBestScore', best.toString());
+        return best;
+    }
+    
+    return null;
+}
+
+// GitHubベストスコア取得
+async function getGitHubBestScore() {
+    if (typeof githubRanking === 'undefined') return null;
+    
+    try {
+        const rankings = await githubRanking.getRankings();
+        if (rankings && rankings.length > 0) {
+            return Math.min(...rankings.map(r => r.finalScore));
+        }
+    } catch (error) {
+        console.error('GitHub記録取得エラー:', error);
+    }
+    
+    return null;
+}
+
+async function showNameInputForm() {
+    // 新記録判定
+    const isNewRecord = await checkIfNewRecord(gameState.lastScore);
+    
+    let message = `🎉 ゲームクリアおめでとうございます！ 🎉\n\n⏱️ クリア時間: ${gameState.lastScore.finalScore.toFixed(2)}秒\n🎯 正解率: ${gameState.lastScore.accuracy}%`;
+    
+    if (isNewRecord) {
+        message += `\n\n🏆 新記録です！おめでとうございます！ 🏆`;
+    }
+    
+    message += `\n\n🏆 ランキングに登録しますか？\n名前を入力してください（キャンセルでスキップ）:`;
+    
+    const playerName = prompt(message);
     
     if (playerName && playerName.trim()) {
         gameState.lastScore.playerName = playerName.trim();
-        saveRanking(gameState.lastScore);
+        await saveRanking(gameState.lastScore);
+    } else if (isNewRecord) {
+        // 新記録の場合は自動保存
+        gameState.lastScore.playerName = 'Anonymous';
+        await saveRanking(gameState.lastScore);
+        alert('新記録のため自動保存されました！');
     }
 }
 
@@ -792,6 +935,9 @@ function resetGame() {
 document.addEventListener('DOMContentLoaded', () => {
     // GitHub トークンの初期化
     initializeGitHubToken();
+    
+    // ベストスコア表示の初期化
+    updateBestScoreDisplay();
     
     if (elements.startBtn) {
         elements.startBtn.addEventListener('click', startGame);
