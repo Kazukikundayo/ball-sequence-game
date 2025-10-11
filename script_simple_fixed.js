@@ -396,10 +396,10 @@ async function checkIfNewRecord(newScore) {
                 
                 if (githubBest && newScore.finalScore < githubBest) {
                     isNewRecord = true;
-                    console.log('ファミリー新記録:', newScore.finalScore, 'vs ファミリー記録:', githubBest);
+                    console.log('反射神経新記録:', newScore.finalScore, 'vs 反射神経記録:', githubBest);
                 }
             } catch (error) {
-                console.log('ファミリー記録取得失敗、ローカル判定を使用:', error.message);
+                console.log('反射神経記録取得失敗、ローカル判定を使用:', error.message);
             }
         }
         
@@ -479,7 +479,7 @@ async function saveRanking(newScore) {
         // プレイヤー名を取得
         let playerName = newScore.playerName;
         if (!playerName || playerName.trim() === '') {
-            playerName = prompt('プレイヤー名を入力してください（ファミリーランキング用）:', 'Player');
+            playerName = prompt('プレイヤー名を入力してください（反射神経ランキング用）:', 'Player');
             if (!playerName || playerName.trim() === '') {
                 playerName = 'Anonymous';
             }
@@ -489,7 +489,7 @@ async function saveRanking(newScore) {
         const githubToken = localStorage.getItem('github_token');
         
         if (githubToken && typeof githubRanking !== 'undefined') {
-            console.log('ファミリーランキングに保存中...');
+            console.log('反射神経ランキングに保存中...');
             
             try {
                 const githubResult = await githubRanking.addScore(
@@ -499,8 +499,8 @@ async function saveRanking(newScore) {
                     newScore.wrongClicks
                 );
                 
-                console.log('ファミリーランキング保存成功');
-                showRanking(true, 'ファミリーランキングに登録されました！🎉');
+                console.log('反射神経ランキング保存成功');
+                showRanking(true, '反射神経ランキングに登録されました！⚡');
                 return;
                 
             } catch (githubError) {
@@ -568,13 +568,13 @@ async function showRanking(isGitHubMode = null, message = '') {
         
         if (githubToken && typeof githubRanking !== 'undefined' && isGitHubMode !== false) {
             try {
-                console.log('ファミリーランキングを取得中...');
+                console.log('反射神経ランキングを取得中...');
                 const gitHubData = await githubRanking.fetchRankingsFromGitHub();
                 rankingData = gitHubData;
-                dataSource = '👨‍👩‍👧‍👦 ファミリーランキング';
-                console.log('ファミリーランキング取得成功');
+                dataSource = '⚡ 反射神経ランキング';
+                console.log('反射神経ランキング取得成功');
             } catch (error) {
-                console.warn('ファミリーランキング取得失敗、ローカルデータを使用:', error);
+                console.warn('反射神経ランキング取得失敗、ローカルデータを使用:', error);
                 const localData = JSON.parse(localStorage.getItem('gameRanking')) || { rankings: [] };
                 rankingData = { rankings: localData.rankings || [] };
                 dataSource = '💾 ローカルランキング (オンライン接続失敗)';
@@ -583,7 +583,7 @@ async function showRanking(isGitHubMode = null, message = '') {
             // ローカルデータのみ使用
             const localData = JSON.parse(localStorage.getItem('gameRanking')) || { rankings: [] };
             rankingData = { rankings: localData.rankings || [] };
-            dataSource = githubToken ? '💾 ローカルランキング' : '💾 ローカルランキング (ファミリー設定未完了)';
+            dataSource = githubToken ? '💾 ローカルランキング' : '💾 ローカルランキング (反射神経設定未完了)';
         }
         
         let rankingHTML = '<div class="ranking-display">';
@@ -609,7 +609,7 @@ async function showRanking(isGitHubMode = null, message = '') {
             rankingHTML += '<p>まだランキングデータがありません。<br>ゲームをプレイしてスコアを記録してください。</p>';
         } else {
             rankingHTML += '<table class="ranking-table">';
-            rankingHTML += '<thead><tr><th>順位</th><th>名前</th><th>時間</th><th>正解率</th><th>日時</th></tr></thead>';
+            rankingHTML += '<thead><tr><th>順位</th><th>名前</th><th>反応時間⚡</th><th>正確性</th><th>日時</th></tr></thead>';
             rankingHTML += '<tbody>';
             
             const topRankings = rankingData.rankings.slice(0, 10); // 20位から10位に変更
@@ -737,7 +737,7 @@ async function testGitHubSync() {
 function showGitHubSetup() {
     try {
         let setupHTML = '<div class="github-setup">';
-        setupHTML += '<h3>⚙️ ファミリーランキング設定</h3>';
+        setupHTML += '<h3>⚡ 反射神経ランキング設定</h3>';
         setupHTML += '<p>作成したPersonal Access Tokenを入力してください：</p>';
         
         setupHTML += '<div class="setup-steps">';

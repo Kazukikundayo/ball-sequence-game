@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5x5グリッドパネルゲーム</title>
+    <title>反射神経テスト - 5x5グリッドゲーム</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>ボール順番選択ゲーム</h1>
+        <h1>⚡ 反射神経テストゲーム</h1>
         
         <!-- バックグラウンド音楽 -->
         <audio id="background-music" loop preload="auto" crossorigin="anonymous">
@@ -35,16 +35,16 @@
         </audio>
         
         <div class="info-panel">
-            <div class="timer">時間: <span id="timer">0.00</span>秒</div>
+            <div class="timer">反応時間: <span id="timer">0.00</span>秒</div>
             <div class="next-number">次の番号: <span id="next-number">1</span></div>
-            <div class="score">スコア: <span id="score">0</span>/20</div>
+            <div class="score">進捗: <span id="score">0</span>/25</div>
             <div class="best-score">ベスト: <span id="best-score">--</span>秒</div>
         </div>
         <div class="controls">
             <button id="start-btn">ゲーム開始（音楽付き）</button>
             <button id="reset-btn">リセット</button>
             <button id="music-btn" class="music-control">🎵 音楽ON/OFF</button>
-            <button id="ranking-btn" class="ranking-control">🏆 ランキング</button>
+            <button id="ranking-btn" class="ranking-control">⚡ 反射神経ランキング</button>
             <button id="test-sound-btn" style="background: orange; color: white;">🔊 音テスト</button>
         </div>
         <!-- モバイル用：情報パネルとボタンを1行に配置 -->
