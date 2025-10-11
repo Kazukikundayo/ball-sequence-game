@@ -7,7 +7,7 @@
 /* グリッドパネルゲーム用スタイル */
 html, body {
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%) !important; /* 柔らかいブルー〜グリーングラデーション */
+    background: #f0f0f0; /* グラデーションを削除してシンプルな背景色に */
     height: 100vh;
     overflow: hidden;
     margin: 0;
@@ -19,32 +19,30 @@ body {
     justify-content: center;
     align-items: center;
     background-image: url('cat.png');
-    background-size: 80%; /* 画像サイズを調整してより見えやすく */
+    background-size: cover; /* coverに戻して画面全体に表示 */
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
 
 .container {
-    background: rgba(255, 255, 255, 0.02); /* さらに透明にして背景を見えやすく */
+    background: transparent; /* 完全に透明にして背景を見えるように */
     border-radius: 20px;
     padding: 15px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: none; /* ボックスシャドウを削除 */
     width: 98vw;
     height: 95vh;
     text-align: center;
     display: flex;
     flex-direction: column;
-    -webkit-backdrop-filter: blur(2px); /* ブラーを軽減 */
-    backdrop-filter: blur(2px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: none; /* ボーダーを削除 */
 }
 
 h1 {
     color: #ffffff;
     margin-bottom: 20px;
     font-size: 2.5em;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8); /* テキストシャドウを強化 */
 }
 
 /* タイトルを全デバイスで非表示 */
@@ -160,10 +158,12 @@ h1 {
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.6); /* 少し透明度を上げて背景を見やすく */
     padding: 15px;
     border-radius: 15px;
     border: 2px solid rgba(255, 255, 255, 0.3);
+    -webkit-backdrop-filter: blur(3px); /* Safari対応 */
+    backdrop-filter: blur(3px); /* ブラー効果を追加 */
 }
 
 .game-info .info-panel {
@@ -474,7 +474,7 @@ button {
                  0 -2px 2px rgba(0, 0, 0, 0.3); /* テキストシャドウも強化 */
     animation: floatBall 3s ease-in-out infinite;
     z-index: 3; /* 星空エフェクトの上に表示 */
-    opacity: 1; /* 完全に不透明に変更 */
+    opacity: 0.9; /* 少し透明にして背景が透けて見えるように */
     filter: brightness(1.1); /* 全体的に明るく */
 }
 
