@@ -18,7 +18,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: url('./cat.png');
+    background-image: url('cat.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -1297,6 +1297,63 @@ button {
 .close-ranking-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ページング関連 */
+.pagination-info {
+    text-align: center;
+    margin: 15px 0;
+    color: #87CEEB;
+    font-size: 0.9em;
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    min-width: 40px;
+}
+
+.page-btn:hover {
+    background: linear-gradient(45deg, #5a6fd8, #6a4190);
+    transform: translateY(-1px);
+}
+
+.page-btn.current-page {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+    cursor: default;
+}
+
+.page-btn.current-page:hover {
+    transform: none;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 480px) {
+    .pagination-controls {
+        gap: 4px;
+    }
+    
+    .page-btn {
+        padding: 6px 8px;
+        font-size: 0.8em;
+        min-width: 35px;
+    }
 }
 
 .ranking-control, #ranking-btn-mobile {

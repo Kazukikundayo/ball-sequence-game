@@ -549,7 +549,7 @@ function saveToLocalStorageOnly(newScore, playerName) {
         
         rankingData.rankings.push(newRanking);
         rankingData.rankings.sort((a, b) => a.finalScore - b.finalScore);
-        rankingData.rankings = rankingData.rankings.slice(0, 20); // 50から20に変更（表示は10位だが予備も保持）
+        rankingData.rankings = rankingData.rankings.slice(0, 50); // 50位まで保持
         rankingData.lastUpdated = new Date().toISOString();
         rankingData.totalPlayers = rankingData.rankings.length;
         
@@ -563,7 +563,7 @@ function saveToLocalStorageOnly(newScore, playerName) {
 }
 
 // ランキング表示（GitHub連携対応版）
-async function showRanking(isGitHubMode = null, message = '') {
+async function showRanking(isGitHubMode = null, message = '', page = 1) {
     try {
         let rankingData;
         let dataSource = '';
@@ -613,17 +613,31 @@ async function showRanking(isGitHubMode = null, message = '') {
         if (!rankingData.rankings || rankingData.rankings.length === 0) {
             rankingHTML += '<p>まだランキングデータがありません。<br>ゲームをプレイしてスコアを記録してください。</p>';
         } else {
+            // ページング設定
+            const itemsPerPage = 10;
+            const totalItems = Math.min(rankingData.rankings.length, 50); // 最大50位まで
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const currentPage = Math.max(1, Math.min(page, totalPages));
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+            
+            // ページ情報表示
+            rankingHTML += `<div class="pagination-info">
+                <span>${totalItems}件中 ${startIndex + 1}-${endIndex}位を表示 (${currentPage}/${totalPages}ページ)</span>
+            </div>`;
+            
             rankingHTML += '<table class="ranking-table">';
             rankingHTML += '<thead><tr><th>順位</th><th>名前</th><th>反応時間⚡</th><th>正確性</th><th>日時</th></tr></thead>';
             rankingHTML += '<tbody>';
             
-            const topRankings = rankingData.rankings.slice(0, 10); // 20位から10位に変更
-            topRankings.forEach((ranking, index) => {
+            const pageRankings = rankingData.rankings.slice(startIndex, endIndex);
+            pageRankings.forEach((ranking, index) => {
+                const actualRank = startIndex + index + 1;
                 const playDate = ranking.date || new Date(ranking.playDate || ranking.timestamp).toLocaleDateString('ja-JP');
                 const finalTime = ranking.finalTime || ranking.finalScore;
                 rankingHTML += `
-                    <tr class="${index < 3 ? 'top-rank' : ''}">
-                        <td>${index + 1}</td>
+                    <tr class="${actualRank <= 3 ? 'top-rank' : ''}">
+                        <td>${actualRank}</td>
                         <td>${ranking.playerName}</td>
                         <td>${finalTime.toFixed(2)}秒</td>
                         <td>${ranking.accuracy.toFixed(1)}%</td>
@@ -633,6 +647,32 @@ async function showRanking(isGitHubMode = null, message = '') {
             });
             
             rankingHTML += '</tbody></table>';
+            
+            // ページングコントロール
+            if (totalPages > 1) {
+                rankingHTML += '<div class="pagination-controls">';
+                
+                // 前のページボタン
+                if (currentPage > 1) {
+                    rankingHTML += `<button onclick="showRanking(${isGitHubMode}, '${message}', ${currentPage - 1})" class="page-btn">◀ 前のページ</button>`;
+                }
+                
+                // ページ番号ボタン
+                for (let i = 1; i <= totalPages; i++) {
+                    if (i === currentPage) {
+                        rankingHTML += `<button class="page-btn current-page">${i}</button>`;
+                    } else {
+                        rankingHTML += `<button onclick="showRanking(${isGitHubMode}, '${message}', ${i})" class="page-btn">${i}</button>`;
+                    }
+                }
+                
+                // 次のページボタン
+                if (currentPage < totalPages) {
+                    rankingHTML += `<button onclick="showRanking(${isGitHubMode}, '${message}', ${currentPage + 1})" class="page-btn">次のページ ▶</button>`;
+                }
+                
+                rankingHTML += '</div>';
+            }
         }
         
         rankingHTML += '<button onclick="closeRanking()" class="close-ranking-btn">閉じる</button>';
@@ -669,7 +709,7 @@ function showBasicLocalRanking(rankingData) {
         rankingHTML += '<thead><tr><th>順位</th><th>名前</th><th>時間</th><th>正解率</th><th>日時</th></tr></thead>';
         rankingHTML += '<tbody>';
         
-        const topRankings = rankingData.rankings.slice(0, 10); // 20位から10位に変更
+        const topRankings = rankingData.rankings.slice(0, 50); // 50位まで表示
         topRankings.forEach((ranking, index) => {
             const playDate = new Date(ranking.playDate).toLocaleDateString('ja-JP');
             rankingHTML += `
