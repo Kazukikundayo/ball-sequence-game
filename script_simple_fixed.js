@@ -153,53 +153,61 @@ function updateBestScoreDisplay() {
 
 // ゲーム開始
 async function startGame() {
-    if (gameState.isPlaying) {
-        return;
-    }
-    
-    if (elements.clearSound) {
-        elements.clearSound.pause();
-        elements.clearSound.currentTime = 0;
-    }
-    
-    // ベストスコアを事前に取得してキャッシュ
-    await initializeBestScore();
-    
-    // UI切り替え：スタート画面を非表示、ゲーム情報を表示
-    if (elements.startScreen) {
-        elements.startScreen.style.display = 'none';
-    }
-    if (elements.gameInfo) {
-        elements.gameInfo.style.display = 'block';
-    }
-    
-    gameState.isPlaying = true;
-    gameState.startTime = Date.now();
-    gameState.currentNumber = 1;
-    gameState.score = 0;
-    gameState.elapsedTime = 0;
-    gameState.wrongClicks = 0;
-    gameState.penaltyTime = 0;
-    
-    elements.result.style.display = 'none';
-    updateUI();
-    
-    generateBalls();
-    startTimer();
-    startTimeoutTimer();
-    
-    if (!musicState.isPlaying) {
-        playBackgroundMusic()
-            .then(() => {
-                if (elements.backgroundMusic) {
-                    elements.backgroundMusic.volume = musicState.volume * 0.7;
-                }
-            })
-            .catch(() => {});
-    } else {
-        if (elements.backgroundMusic) {
-            elements.backgroundMusic.volume = musicState.volume * 0.7;
+    try {
+        if (gameState.isPlaying) {
+            return;
         }
+        
+        if (elements.clearSound) {
+            elements.clearSound.pause();
+            elements.clearSound.currentTime = 0;
+        }
+        
+        // ベストスコアを事前に取得してキャッシュ
+        await initializeBestScore();
+        
+        // UI切り替え：スタート画面を非表示、ゲーム情報を表示
+        if (elements.startScreen) {
+            elements.startScreen.style.display = 'none';
+        }
+        if (elements.gameInfo) {
+            elements.gameInfo.style.display = 'block';
+        }
+        
+        gameState.isPlaying = true;
+        gameState.startTime = Date.now();
+        gameState.currentNumber = 1;
+        gameState.score = 0;
+        gameState.elapsedTime = 0;
+        gameState.wrongClicks = 0;
+        gameState.penaltyTime = 0;
+        
+        elements.result.style.display = 'none';
+        updateUI();
+        
+        generateBalls();
+        startTimer();
+        startTimeoutTimer();
+        
+        // 音楽再生
+        if (!musicState.isPlaying) {
+            playBackgroundMusic()
+                .then(() => {
+                    if (elements.backgroundMusic) {
+                        elements.backgroundMusic.volume = musicState.volume * 0.7;
+                    }
+                })
+                .catch(() => {});
+        } else {
+            if (elements.backgroundMusic) {
+                elements.backgroundMusic.volume = musicState.volume * 0.7;
+            }
+        }
+        
+        console.log('ゲーム開始成功');
+        
+    } catch (error) {
+        console.error('ゲーム開始エラー:', error);
     }
 }
 
@@ -305,8 +313,8 @@ function stopTimer() {
 function updateUI() {
     const displayTime = gameState.elapsedTime.toFixed(2);
     elements.timer.textContent = displayTime;
-    elements.nextNumber.textContent = gameState.currentNumber;
-    elements.score.textContent = gameState.score;
+    if (elements.nextNumber) elements.nextNumber.textContent = gameState.currentNumber;
+    if (elements.score) elements.score.textContent = gameState.score;
     
     if (elements.timerMobile) elements.timerMobile.textContent = displayTime;
     if (elements.nextNumberMobile) elements.nextNumberMobile.textContent = gameState.currentNumber;

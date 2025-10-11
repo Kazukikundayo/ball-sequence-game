@@ -1140,6 +1140,10 @@ button {
     }
     
     .game-info .info-panel {
+        display: flex; /* flexを明示的に指定 */
+        flex-direction: row; /* 横並び */
+        align-items: center; /* 中央揃え */
+        justify-content: space-between; /* 均等配置 */
         gap: 8px;
         font-size: 1em; /* 0.7em → 1em に大幅拡大 */
         font-weight: bold;
