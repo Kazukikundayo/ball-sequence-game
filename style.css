@@ -290,11 +290,13 @@ button {
 }
 
 .ball {
-    position: absolute;
-    width: 60px;
-    height: 60px;
+    position: relative; /* absoluteからrelativeに変更 */
+    width: 100%; /* グリッドセルに合わせて100%に */
+    height: 100%; /* グリッドセルに合わせて100%に */
+    min-height: 60px; /* 最小サイズを保証 */
     background: radial-gradient(circle at 30% 30%, #ff9a9e, #ff6b6b, #ee5a52);
     border: 3px solid rgba(255, 255, 255, 0.8);
+    border-radius: 12px; /* 角を丸くしてパネル感を出す */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -313,9 +315,8 @@ button {
     text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8), 
                  0 -1px 1px rgba(0, 0, 0, 0.2);
     animation: floatBall 3s ease-in-out infinite;
-    position: absolute;
     z-index: 3; /* 星空エフェクトの上に表示 */
-    opacity: 0.7; /* より強い半透明に変更 */
+    opacity: 0.95; /* 透明度を調整 */
     filter: brightness(1.1); /* 全体的に明るく */
 }
 
@@ -899,37 +900,14 @@ button {
         flex: 1;
         padding: 8px;
         min-height: calc(100vh - 70px); /* 1行UI分を除く */
+        gap: 6px; /* タブレットでは中間のギャップ */
     }
     
-    /* タブレット用ボールサイズ：モバイルより大きく、PCより小さく */
-    .ball.size-small {
-        width: 55px;
-        height: 55px;
-        font-size: 0.8em;
-    }
-    
-    .ball.size-medium {
-        width: 75px;
-        height: 75px;
-        font-size: 1.0em;
-    }
-    
-    .ball.size-large {
-        width: 95px;
-        height: 95px;
-        font-size: 1.2em;
-    }
-    
-    .ball.size-xlarge {
-        width: 115px;
-        height: 115px;
-        font-size: 1.4em;
-    }
-    
-    .ball.size-xxlarge {
-        width: 135px;
-        height: 135px;
-        font-size: 1.6em;
+    /* タブレット用ボールスタイル：グリッドに合わせて調整 */
+    .ball {
+        font-size: 1.1em; /* タブレットでの文字サイズ */
+        font-weight: bold;
+        min-height: 60px; /* タブレット用最小高さ */
     }
 }
 
@@ -978,23 +956,15 @@ button {
         padding: 3px;
         min-height: calc(100vh - 50px); /* UIサイズに合わせて調整 */
         border-width: 1px;
+        gap: 3px; /* モバイルでは隙間を小さく */
     }
     
-    /* モバイル用ボールサイズ：最小サイズ拡大で文字視認性向上 */
-    .ball.size-small {
-        width: 50px; /* 40px → 50px に拡大 */
-        height: 50px;
-        font-size: 1.0em; /* 0.8em → 1.0em に拡大 */
+    /* モバイル用ボールスタイル：グリッドに合わせて調整 */
+    .ball {
+        font-size: 1.0em; /* モバイルでの文字サイズ */
         font-weight: bold;
-        line-height: 50px;
-    }
-    
-    .ball.size-medium {
-        width: 60px; /* 50px → 60px に拡大 */
-        height: 60px;
-        font-size: 1.2em; /* 1.0em → 1.2em に拡大 */
-        font-weight: bold;
-        line-height: 60px;
+        border-width: 2px; /* 境界線を細く */
+        min-height: 50px; /* 最小高さを確保 */
     }
     
     .ball.size-large {
@@ -1330,7 +1300,7 @@ button {
     box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
 }
 
-.save-token-btn, .clear-token-btn, .close-setup-btn {
+.save-token-btn, .clear-token-btn, .close-setup-btn, .test-btn {
     padding: 10px 20px;
     margin: 5px;
     border: none;
@@ -1351,6 +1321,11 @@ button {
     color: white;
 }
 
+.test-btn {
+    background: linear-gradient(45deg, #17a2b8, #138496);
+    color: white;
+}
+
 .close-setup-btn {
     background: linear-gradient(45deg, #6c757d, #495057);
     color: white;
@@ -1358,9 +1333,15 @@ button {
     margin: 20px auto 0;
 }
 
-.save-token-btn:hover, .clear-token-btn:hover, .close-setup-btn:hover {
+.save-token-btn:hover, .clear-token-btn:hover, .close-setup-btn:hover, .test-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.save-token-btn:disabled, .clear-token-btn:disabled, .test-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
 .token-status {
@@ -1368,14 +1349,22 @@ button {
     text-align: center;
 }
 
-.token-ok {
+.token-ok, .status-ok {
     color: #90EE90;
     font-weight: bold;
+    margin: 5px 0;
 }
 
-.token-none {
+.token-none, .status-error {
     color: #FFB6C1;
     font-weight: bold;
+    margin: 5px 0;
+}
+
+.status-info {
+    color: #87CEEB;
+    font-size: 14px;
+    margin: 5px 0;
 }
 
 .ranking-message {

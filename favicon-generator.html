@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Favicon Generator</title>
+</head>
+<body>
+    <canvas id="canvas" width="32" height="32" style="border: 1px solid black;"></canvas>
+    <script>
+        // 簡単なゲーム用faviconを生成
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // 背景を設定
+        ctx.fillStyle = '#4CAF50';
+        ctx.fillRect(0, 0, 32, 32);
+        
+        // 数字「25」を描画（5x5グリッドを表現）
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 12px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('25', 16, 20);
+        
+        // canvasをdata URLとして取得
+        const dataURL = canvas.toDataURL('image/png');
+        
+        // ダウンロードリンクを作成
+        const link = document.createElement('a');
+        link.download = 'favicon.png';
+        link.href = dataURL;
+        link.textContent = 'Download Favicon';
+        document.body.appendChild(link);
+        
+        console.log('Data URL:', dataURL);
+    </script>
+</body>
+</html>

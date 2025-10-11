@@ -330,8 +330,56 @@ function showNameInputForm() {
     }
 }
 
-// ランキング保存（シンプル版）
-function saveRanking(newScore) {
+// ランキング保存（GitHub Issues API 連携版）
+async function saveRanking(newScore) {
+    try {
+        // プレイヤー名を取得
+        let playerName = newScore.playerName;
+        if (!playerName || playerName.trim() === '') {
+            playerName = prompt('プレイヤー名を入力してください（GitHub共有ランキング用）:', 'Player');
+            if (!playerName || playerName.trim() === '') {
+                playerName = 'Anonymous';
+            }
+        }
+
+        // GitHub トークンが設定されているかチェック
+        const githubToken = localStorage.getItem('github_token');
+        
+        if (githubToken && typeof githubRanking !== 'undefined') {
+            console.log('GitHub共有ランキングに保存中...');
+            
+            try {
+                const githubResult = await githubRanking.addScore(
+                    playerName,
+                    newScore.finalScore,
+                    newScore.accuracy,
+                    newScore.wrongClicks
+                );
+                
+                console.log('GitHub共有ランキング保存成功');
+                showRanking(true, 'GitHub共有ランキングに登録されました！🎉');
+                return;
+                
+            } catch (githubError) {
+                console.warn('GitHub保存失敗、ローカル保存に切り替え:', githubError);
+                alert('GitHub保存に失敗しました。ローカルに保存します。\nエラー: ' + githubError.message);
+            }
+        } else {
+            console.log('GitHub トークンが未設定、またはgithubRankingが利用できません');
+        }
+        
+        // フォールバック: ローカルストレージに保存
+        saveToLocalStorageOnly(newScore, playerName);
+        showRanking(false, 'ローカルランキングに保存されました');
+        
+    } catch (error) {
+        console.error('ランキング保存エラー:', error);
+        alert('ランキングの保存に失敗しました: ' + error.message);
+    }
+}
+
+// ローカルストレージのみに保存（フォールバック用）
+function saveToLocalStorageOnly(newScore, playerName) {
     try {
         let rankingData = JSON.parse(localStorage.getItem('gameRanking')) || {
             rankings: [],
@@ -341,7 +389,7 @@ function saveRanking(newScore) {
         
         const newRanking = {
             id: Date.now(),
-            playerName: newScore.playerName,
+            playerName: playerName,
             clearTime: newScore.actualTime,
             accuracy: newScore.accuracy,
             wrongClicks: newScore.wrongClicks,
@@ -359,30 +407,63 @@ function saveRanking(newScore) {
         
         localStorage.setItem('gameRanking', JSON.stringify(rankingData));
         
-        console.log('ランキング保存完了:', newRanking);
-        showRanking();
+        console.log('ローカルランキング保存完了:', newRanking);
         
     } catch (error) {
-        console.error('ランキング保存エラー:', error);
-        alert('ランキングの保存に失敗しました。');
+        console.error('ローカルランキング保存エラー:', error);
     }
 }
 
-// ランキング表示（シンプル版）
-function showRanking() {
+// ランキング表示（GitHub連携対応版）
+async function showRanking(isGitHubMode = null, message = '') {
     try {
-        const rankingData = JSON.parse(localStorage.getItem('gameRanking')) || { rankings: [] };
+        let rankingData;
+        let dataSource = '';
+        
+        // GitHub トークンが設定されているかチェック
+        const githubToken = localStorage.getItem('github_token');
+        
+        if (githubToken && typeof githubRanking !== 'undefined' && isGitHubMode !== false) {
+            try {
+                console.log('GitHub共有ランキングを取得中...');
+                const gitHubData = await githubRanking.fetchRankingsFromGitHub();
+                rankingData = gitHubData;
+                dataSource = '🌐 GitHub共有ランキング';
+                console.log('GitHub共有ランキング取得成功');
+            } catch (error) {
+                console.warn('GitHub取得失敗、ローカルデータを使用:', error);
+                const localData = JSON.parse(localStorage.getItem('gameRanking')) || { rankings: [] };
+                rankingData = { rankings: localData.rankings || [] };
+                dataSource = '💾 ローカルランキング (GitHub接続失敗)';
+            }
+        } else {
+            // ローカルデータのみ使用
+            const localData = JSON.parse(localStorage.getItem('gameRanking')) || { rankings: [] };
+            rankingData = { rankings: localData.rankings || [] };
+            dataSource = githubToken ? '💾 ローカルランキング' : '💾 ローカルランキング (GitHub未設定)';
+        }
         
         let rankingHTML = '<div class="ranking-display">';
-        rankingHTML += '<h2>🏆 ランキング TOP 20</h2>';
         
-        // GitHub設定ボタン
+        // メッセージがあれば表示
+        if (message) {
+            rankingHTML += `<div class="ranking-message">${message}</div>`;
+        }
+        
+        rankingHTML += `<h2>🏆 ${dataSource}</h2>`;
+        
+        // GitHub設定ボタンと同期ボタン
         rankingHTML += '<div class="github-controls">';
         rankingHTML += '<button onclick="showGitHubSetup()" class="github-setup-btn">⚙️ GitHub設定</button>';
+        
+        if (githubToken && typeof githubRanking !== 'undefined') {
+            rankingHTML += '<button onclick="testGitHubSync()" class="sync-btn">🔄 同期テスト</button>';
+        }
+        
         rankingHTML += '</div>';
         
-        if (rankingData.rankings.length === 0) {
-            rankingHTML += '<p>まだランキングデータがありません。</p>';
+        if (!rankingData.rankings || rankingData.rankings.length === 0) {
+            rankingHTML += '<p>まだランキングデータがありません。<br>ゲームをプレイしてスコアを記録してください。</p>';
         } else {
             rankingHTML += '<table class="ranking-table">';
             rankingHTML += '<thead><tr><th>順位</th><th>名前</th><th>時間</th><th>正解率</th><th>日時</th></tr></thead>';
@@ -390,12 +471,13 @@ function showRanking() {
             
             const topRankings = rankingData.rankings.slice(0, 20);
             topRankings.forEach((ranking, index) => {
-                const playDate = new Date(ranking.playDate).toLocaleDateString('ja-JP');
+                const playDate = ranking.date || new Date(ranking.playDate || ranking.timestamp).toLocaleDateString('ja-JP');
+                const finalTime = ranking.finalTime || ranking.finalScore;
                 rankingHTML += `
                     <tr class="${index < 3 ? 'top-rank' : ''}">
                         <td>${index + 1}</td>
                         <td>${ranking.playerName}</td>
-                        <td>${ranking.finalScore.toFixed(2)}秒</td>
+                        <td>${finalTime.toFixed(2)}秒</td>
                         <td>${ranking.accuracy.toFixed(1)}%</td>
                         <td>${playDate}</td>
                     </tr>
@@ -420,7 +502,91 @@ function showRanking() {
         
     } catch (error) {
         console.error('ランキング表示エラー:', error);
-        alert('ランキング表示でエラーが発生しました: ' + error.message);
+        
+        // フォールバック: 基本的なローカルランキング表示
+        const localData = JSON.parse(localStorage.getItem('gameRanking')) || { rankings: [] };
+        showBasicLocalRanking(localData);
+    }
+}
+
+// 基本的なローカルランキング表示（フォールバック用）
+function showBasicLocalRanking(rankingData) {
+    let rankingHTML = '<div class="ranking-display">';
+    rankingHTML += '<h2>🏆 ローカルランキング（エラー復旧版）</h2>';
+    
+    if (rankingData.rankings.length === 0) {
+        rankingHTML += '<p>まだランキングデータがありません。</p>';
+    } else {
+        rankingHTML += '<table class="ranking-table">';
+        rankingHTML += '<thead><tr><th>順位</th><th>名前</th><th>時間</th><th>正解率</th><th>日時</th></tr></thead>';
+        rankingHTML += '<tbody>';
+        
+        const topRankings = rankingData.rankings.slice(0, 20);
+        topRankings.forEach((ranking, index) => {
+            const playDate = new Date(ranking.playDate).toLocaleDateString('ja-JP');
+            rankingHTML += `
+                <tr class="${index < 3 ? 'top-rank' : ''}">
+                    <td>${index + 1}</td>
+                    <td>${ranking.playerName}</td>
+                    <td>${ranking.finalScore.toFixed(2)}秒</td>
+                    <td>${ranking.accuracy.toFixed(1)}%</td>
+                    <td>${playDate}</td>
+                </tr>
+            `;
+        });
+        
+        rankingHTML += '</tbody></table>';
+    }
+    
+    rankingHTML += '<button onclick="closeRanking()" class="close-ranking-btn">閉じる</button>';
+    rankingHTML += '</div>';
+    
+    const overlay = document.createElement('div');
+    overlay.className = 'ranking-overlay';
+    overlay.innerHTML = rankingHTML;
+    document.body.appendChild(overlay);
+}
+
+// GitHub同期テスト
+async function testGitHubSync() {
+    try {
+        console.log('GitHub同期テスト開始');
+        
+        const token = localStorage.getItem('github_token');
+        if (!token) {
+            alert('GitHub トークンが設定されていません。先にトークンを設定してください。');
+            return;
+        }
+        
+        if (typeof githubRanking === 'undefined') {
+            alert('GitHub連携システムが読み込まれていません。ページを再読み込みしてください。');
+            return;
+        }
+        
+        const syncBtn = document.querySelector('.sync-btn');
+        if (syncBtn) {
+            syncBtn.textContent = '🔄 同期中...';
+            syncBtn.disabled = true;
+        }
+        
+        // テスト用のダミーデータでGitHub API接続をテスト
+        const testResult = await githubRanking.fetchRankingsFromGitHub();
+        
+        alert('✅ GitHub API接続テスト成功！\n共有ランキング機能が利用可能です。');
+        
+        // ランキングを再表示
+        closeRanking();
+        showRanking(true);
+        
+    } catch (error) {
+        console.error('GitHub同期テストエラー:', error);
+        alert('❌ GitHub API接続テスト失敗\n\nエラー: ' + error.message + '\n\n以下を確認してください:\n1. トークンが正しく設定されているか\n2. インターネット接続\n3. GitHubリポジトリへのアクセス権限');
+    } finally {
+        const syncBtn = document.querySelector('.sync-btn');
+        if (syncBtn) {
+            syncBtn.textContent = '🔄 同期テスト';
+            syncBtn.disabled = false;
+        }
     }
 }
 
@@ -444,16 +610,35 @@ function showGitHubSetup() {
         
         setupHTML += '<div class="token-input">';
         setupHTML += '<label for="github-token">GitHub Personal Access Token:</label>';
-        setupHTML += '<input type="password" id="github-token" placeholder="ghp_xxxxxxxxxxxxxxxxxx">';
+        
+        // 既存のトークンがあれば表示
+        const currentToken = localStorage.getItem('github_token');
+        const tokenValue = currentToken ? currentToken : '';
+        setupHTML += `<input type="password" id="github-token" placeholder="ghp_xxxxxxxxxxxxxxxxxx" value="${tokenValue}">`;
         setupHTML += '<br>';
         setupHTML += '<button onclick="saveGitHubToken()" class="save-token-btn">💾 保存</button>';
         setupHTML += '<button onclick="clearGitHubToken()" class="clear-token-btn">🗑️ 削除</button>';
+        setupHTML += '<button onclick="testGitHubConnection()" class="test-btn">🔧 接続テスト</button>';
         setupHTML += '</div>';
         
-        const currentToken = localStorage.getItem('github_token');
         setupHTML += '<div class="token-status">';
         if (currentToken) {
             setupHTML += '<p class="token-ok">✅ トークンが設定されています</p>';
+            setupHTML += '<p class="status-info">💡 トークンは自動的に保存されます</p>';
+            
+            // GitHub連携システムの状態をチェック
+            if (typeof githubRanking !== 'undefined') {
+                setupHTML += '<p class="status-ok">✅ GitHub連携システム: 正常</p>';
+            } else {
+                setupHTML += '<p class="status-error">❌ GitHub連携システム: 読み込みエラー</p>';
+            }
+            
+            if (typeof GITHUB_CONFIG !== 'undefined') {
+                setupHTML += '<p class="status-ok">✅ GitHub設定: 正常</p>';
+                setupHTML += `<p class="status-info">📂 リポジトリ: ${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}</p>`;
+            } else {
+                setupHTML += '<p class="status-error">❌ GitHub設定: 読み込みエラー</p>';
+            }
         } else {
             setupHTML += '<p class="token-none">❌ トークンが設定されていません</p>';
         }
@@ -475,6 +660,51 @@ function showGitHubSetup() {
     } catch (error) {
         console.error('GitHub設定画面の表示でエラー:', error);
         alert('GitHub設定画面の表示に失敗しました: ' + error.message);
+    }
+}
+
+// GitHub接続テスト
+async function testGitHubConnection() {
+    try {
+        const tokenInput = document.getElementById('github-token');
+        const token = tokenInput.value.trim() || localStorage.getItem('github_token');
+        
+        if (!token) {
+            alert('❌ トークンを入力または設定してください。');
+            return;
+        }
+        
+        const testBtn = document.querySelector('.test-btn');
+        if (testBtn) {
+            testBtn.textContent = '🔧 テスト中...';
+            testBtn.disabled = true;
+        }
+        
+        // GitHub API の基本的な接続テスト
+        const response = await fetch('https://api.github.com/user', {
+            headers: {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+        
+        if (response.ok) {
+            const userData = await response.json();
+            alert(`✅ GitHub API接続成功！\n\nユーザー: ${userData.login}\n共有ランキング機能が利用可能です。`);
+        } else {
+            const errorData = await response.text();
+            alert(`❌ GitHub API接続失敗\n\nステータス: ${response.status}\nエラー: ${errorData}\n\nトークンの権限を確認してください。`);
+        }
+        
+    } catch (error) {
+        console.error('GitHub接続テストエラー:', error);
+        alert(`❌ GitHub接続テストでエラーが発生しました:\n\n${error.message}\n\nインターネット接続を確認してください。`);
+    } finally {
+        const testBtn = document.querySelector('.test-btn');
+        if (testBtn) {
+            testBtn.textContent = '🔧 接続テスト';
+            testBtn.disabled = false;
+        }
     }
 }
 
@@ -560,6 +790,9 @@ function resetGame() {
 
 // イベントリスナーの設定
 document.addEventListener('DOMContentLoaded', () => {
+    // GitHub トークンの初期化
+    initializeGitHubToken();
+    
     if (elements.startBtn) {
         elements.startBtn.addEventListener('click', startGame);
     }
@@ -610,3 +843,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// GitHub トークンの初期化
+function initializeGitHubToken() {
+    try {
+        const storedToken = localStorage.getItem('github_token');
+        if (storedToken && typeof setGitHubToken === 'function') {
+            setGitHubToken(storedToken);
+            console.log('GitHub トークンを自動読み込みしました');
+        }
+    } catch (error) {
+        console.error('GitHub トークン初期化エラー:', error);
+    }
+}

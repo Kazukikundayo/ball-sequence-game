@@ -37,7 +37,19 @@ function setGitHubToken(token) {
 
 // トークンの取得
 function getGitHubToken() {
-    return GITHUB_CONFIG.token || localStorage.getItem('github_token');
+    // 設定されたトークンまたはlocalStorageから取得
+    const configToken = GITHUB_CONFIG.token;
+    const storedToken = localStorage.getItem('github_token');
+    
+    // 両方存在する場合はconfigを優先、そうでなければstorageから
+    const token = configToken || storedToken;
+    
+    // configに設定されていない場合はstorageの値をconfigにも設定
+    if (!configToken && storedToken) {
+        GITHUB_CONFIG.token = storedToken;
+    }
+    
+    return token;
 }
 
 // トークンの削除
