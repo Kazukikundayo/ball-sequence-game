@@ -154,7 +154,7 @@ h1 {
 .game-info {
     display: none; /* 初期状態では非表示 */
     position: absolute;
-    top: 10px; /* 下部から上部に変更 */
+    bottom: 10px; /* 上部から下部に変更 */
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
@@ -169,23 +169,22 @@ h1 {
 .game-info .info-panel {
     display: flex;
     gap: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 0; /* margin-bottomを削除 */
     color: white;
     font-size: 1.1em;
-}
-
-.game-controls {
-    text-align: center;
+    align-items: center; /* 要素を中央揃え */
+    justify-content: space-between; /* 要素を均等配置 */
 }
 
 .reset-btn {
     background: linear-gradient(45deg, #e74c3c, #c0392b);
     color: white;
-    padding: 8px 16px;
+    padding: 6px 12px; /* パディングを小さく */
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-size: 0.9em;
+    white-space: nowrap; /* テキストが折り返されないように */
 }
 
 /* スタート画面のレスポンシブデザイン */
@@ -221,12 +220,12 @@ h1 {
     
     .game-info {
         position: fixed;
-        top: 5px; /* bottom から top に変更 */
+        bottom: 5px; /* top から bottom に変更 */
         left: 5px;
         right: 5px;
         transform: none;
         padding: 12px; /* パディングを拡大 */
-        min-height: 50px; /* 最小高さを設定 */
+        min-height: 35px; /* 最小高さを縮小 */
     }
     
     .game-info .info-panel {
@@ -1045,7 +1044,7 @@ button {
     /* タブレット用：ゲームエリアを重視 */
     .container {
         width: 100%;
-        padding: 75px 6px 6px 6px; /* トップパディングを拡大してゲーム情報パネル用スペース確保 */
+        padding: 6px 6px 75px 6px; /* ボトムパディングを追加してゲーム情報パネル用スペース確保 */
         height: 100vh;
     }
     
@@ -1086,7 +1085,7 @@ button {
     .container {
         width: 100vw;
         height: 100vh;
-        padding: 70px 2px 2px 2px; /* トップパディングを拡大 */
+        padding: 2px 2px 55px 2px; /* ボトムパディングに変更 */
         margin: 0;
         border-radius: 0;
     }
@@ -1131,9 +1130,13 @@ button {
     
     /* 480px以下でのゲーム情報パネル調整 */
     .game-info {
-        padding: 10px; /* パディングを拡大 */
+        position: fixed;
+        bottom: 5px; /* 下部配置 */
+        left: 5px;
+        right: 5px;
+        padding: 8px; /* パディングを縮小 */
         font-size: 1em; /* ベースフォントサイズ拡大 */
-        min-height: 45px; /* 最小高さを設定 */
+        min-height: 30px; /* 最小高さを更に縮小 */
     }
     
     .game-info .info-panel {
