@@ -18,10 +18,15 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-image: url('./cat.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .container {
-    background: rgba(255, 255, 255, 0.1); /* 背景を透明に近くして下のグラデーションを見せる */
+    background: rgba(255, 255, 255, 0.05); /* さらに透明にして背景を見えやすく */
     border-radius: 20px;
     padding: 15px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
@@ -30,8 +35,8 @@ body {
     text-align: center;
     display: flex;
     flex-direction: column;
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(5px); /* ブラーを軽減 */
+    backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -151,7 +156,7 @@ h1 {
 .game-info {
     display: none; /* 初期状態では非表示 */
     position: absolute;
-    top: 10px;
+    bottom: 10px; /* 上部から下部に変更 */
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
@@ -216,7 +221,7 @@ h1 {
     
     .game-info {
         position: fixed;
-        top: 5px;
+        bottom: 5px; /* top から bottom に変更 */
         left: 5px;
         right: 5px;
         transform: none;
