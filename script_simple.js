@@ -600,13 +600,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (elements.musicBtnMobile) {
         elements.musicBtnMobile.addEventListener('click', toggleBackgroundMusic);
     }
-    if (elements.rankingBtnMobile) {
-        elements.rankingBtnMobile.addEventListener('click', showRanking);
-    }
-    
     // ランキングボタンのイベントリスナー
     if (elements.rankingBtn) {
-        elements.rankingBtn.addEventListener('click', showRanking);
+        elements.rankingBtn.addEventListener('click', debugShowRanking);
+    }
+    if (elements.rankingBtnMobile) {
+        elements.rankingBtnMobile.addEventListener('click', debugShowRanking);
     }
     
     // テスト音ボタンのイベントリスナー
@@ -742,6 +741,100 @@ function saveToLocalStorageOnly(newScore, playerName) {
     }
 }
 
+// デバッグ用のランキング表示関数
+function debugShowRanking() {
+    console.log('debugShowRanking() called');
+    
+    try {
+        // ローカルストレージからランキングデータを取得
+        const localData = JSON.parse(localStorage.getItem('gameRanking')) || { rankings: [] };
+        console.log('Local ranking data:', localData);
+        
+        let rankingHTML = '<div class="ranking-display">';
+        rankingHTML += '<h2>🏆 ローカルランキング（デバッグ版）</h2>';
+        
+        // GitHub設定ボタン
+        rankingHTML += '<div class="github-controls">';
+        rankingHTML += '<button onclick="debugShowGitHubSetup()" class="github-setup-btn">⚙️ GitHub設定</button>';
+        rankingHTML += '<button onclick="testGitHubSync()" class="sync-btn">🔄 テスト同期</button>';
+        rankingHTML += '</div>';
+        
+        if (!localData.rankings || localData.rankings.length === 0) {
+            rankingHTML += '<p>まだランキングデータがありません。<br>ゲームをプレイしてスコアを記録してください。</p>';
+        } else {
+            rankingHTML += '<table class="ranking-table">';
+            rankingHTML += '<thead><tr><th>順位</th><th>名前</th><th>時間</th><th>正解率</th><th>日時</th></tr></thead>';
+            rankingHTML += '<tbody>';
+            
+            const topRankings = localData.rankings.slice(0, 20);
+            topRankings.forEach((ranking, index) => {
+                const playDate = new Date(ranking.playDate).toLocaleDateString('ja-JP');
+                rankingHTML += `
+                    <tr class="${index < 3 ? 'top-rank' : ''}">
+                        <td>${index + 1}</td>
+                        <td>${ranking.playerName}</td>
+                        <td>${ranking.finalScore.toFixed(2)}秒</td>
+                        <td>${ranking.accuracy.toFixed(1)}%</td>
+                        <td>${playDate}</td>
+                    </tr>
+                `;
+            });
+            
+            rankingHTML += '</tbody></table>';
+        }
+        
+        rankingHTML += '<button onclick="closeRanking()" class="close-ranking-btn">閉じる</button>';
+        rankingHTML += '</div>';
+        
+        // 既存のオーバーレイがあれば削除
+        const existingOverlay = document.querySelector('.ranking-overlay');
+        if (existingOverlay) {
+            document.body.removeChild(existingOverlay);
+        }
+        
+        // ランキング表示用のオーバーレイを作成
+        const overlay = document.createElement('div');
+        overlay.className = 'ranking-overlay';
+        overlay.innerHTML = rankingHTML;
+        document.body.appendChild(overlay);
+        
+        console.log('Debug ranking overlay created successfully');
+        
+    } catch (error) {
+        console.error('ランキング表示エラー:', error);
+        alert('ランキング表示でエラーが発生しました: ' + error.message);
+    }
+}
+
+// テスト用のGitHub同期関数
+function testGitHubSync() {
+    console.log('GitHub同期テスト');
+    
+    // GitHub関数の利用可能性をチェック
+    console.log('githubRanking object:', typeof githubRanking);
+    
+    if (typeof githubRanking !== 'undefined' && githubRanking.syncRankingsFromGitHub) {
+        console.log('GitHub同期機能が利用可能です');
+        alert('GitHub同期機能は実装済みですが、トークンの設定が必要です。');
+    } else {
+        console.log('GitHub同期機能が利用できません');
+        alert('GitHub連携機能が読み込まれていません。');
+    }
+}
+
+// ランキング表示を閉じる（簡易版）
+function closeRanking() {
+    try {
+        const overlay = document.querySelector('.ranking-overlay');
+        if (overlay) {
+            document.body.removeChild(overlay);
+            console.log('Ranking overlay closed');
+        }
+    } catch (error) {
+        console.error('Error closing ranking overlay:', error);
+    }
+}
+
 // ランキングを表示（GitHub + ローカル統合版）
 async function showRanking(isGitHubMode = null, message = '') {
     try {
@@ -780,7 +873,7 @@ async function showRanking(isGitHubMode = null, message = '') {
         
         // GitHub設定ボタン
         rankingHTML += '<div class="github-controls">';
-        rankingHTML += '<button onclick="showGitHubSetup()" class="github-setup-btn">⚙️ GitHub設定</button>';
+        rankingHTML += '<button onclick="debugShowGitHubSetup()" class="github-setup-btn">⚙️ GitHub設定</button>';
         rankingHTML += '<button onclick="syncRankings()" class="sync-btn">🔄 同期</button>';
         rankingHTML += '</div>';
         
@@ -865,29 +958,190 @@ function showBasicLocalRanking(rankingData) {
     document.body.appendChild(overlay);
 }
 
+// デバッグ用のGitHub設定画面表示
+function debugShowGitHubSetup() {
+    console.log('debugShowGitHubSetup() called');
+    
+    try {
+        // 簡易版のGitHub設定画面を表示
+        let setupHTML = '<div class="github-setup">';
+        setupHTML += '<h3>⚙️ GitHub共有ランキング設定</h3>';
+        setupHTML += '<p>作成したPersonal Access Tokenを入力してください：</p>';
+        
+        setupHTML += '<div class="setup-steps">';
+        setupHTML += '<h4>設定手順:</h4>';
+        setupHTML += '<ol>';
+        setupHTML += '<li>GitHub.com にログイン</li>';
+        setupHTML += '<li>Settings → Developer settings → Personal access tokens → Tokens (classic)</li>';
+        setupHTML += '<li>"Generate new token (classic)" をクリック</li>';
+        setupHTML += '<li>Note: "Ball Sequence Game Rankings"</li>';
+        setupHTML += '<li>Scopes: "repo" または "public_repo" にチェック</li>';
+        setupHTML += '<li>"Generate token" をクリック</li>';
+        setupHTML += '<li>生成されたトークンを以下に入力</li>';
+        setupHTML += '</ol>';
+        setupHTML += '</div>';
+        
+        setupHTML += '<div class="token-input">';
+        setupHTML += '<label for="github-token">GitHub Personal Access Token:</label>';
+        setupHTML += '<input type="password" id="github-token" placeholder="ghp_xxxxxxxxxxxxxxxxxx">';
+        setupHTML += '<br>';
+        setupHTML += '<button onclick="testSaveToken()" class="save-token-btn">💾 保存</button>';
+        setupHTML += '<button onclick="testClearToken()" class="clear-token-btn">🗑️ 削除</button>';
+        setupHTML += '</div>';
+        
+        // 現在の状態を表示
+        const currentToken = localStorage.getItem('github_token');
+        setupHTML += '<div class="token-status">';
+        if (currentToken) {
+            setupHTML += '<p class="token-ok">✅ トークンが設定されています</p>';
+        } else {
+            setupHTML += '<p class="token-none">❌ トークンが設定されていません</p>';
+        }
+        setupHTML += '</div>';
+        
+        setupHTML += '<button onclick="closeGitHubSetup()" class="close-setup-btn">閉じる</button>';
+        setupHTML += '</div>';
+        
+        // 既存のオーバーレイがあれば削除
+        const existingOverlay = document.querySelector('.github-setup-overlay');
+        if (existingOverlay) {
+            document.body.removeChild(existingOverlay);
+        }
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'github-setup-overlay';
+        overlay.innerHTML = setupHTML;
+        document.body.appendChild(overlay);
+        
+        console.log('GitHub setup overlay created successfully');
+        
+    } catch (error) {
+        console.error('GitHub設定画面の表示でエラーが発生:', error);
+        alert('GitHub設定画面の表示に失敗しました: ' + error.message);
+    }
+}
+
+// テスト用のトークン保存関数
+function testSaveToken() {
+    try {
+        const tokenInput = document.getElementById('github-token');
+        const token = tokenInput.value.trim();
+        
+        console.log('Token saving attempted, length:', token.length);
+        
+        if (token) {
+            // ローカルストレージに直接保存
+            localStorage.setItem('github_token', token);
+            
+            // GitHub configにも設定（利用可能であれば）
+            if (typeof setGitHubToken === 'function') {
+                setGitHubToken(token);
+                console.log('Token saved via setGitHubToken function');
+            } else {
+                console.log('setGitHubToken function not available, using localStorage only');
+            }
+            
+            alert('✅ GitHubトークンを保存しました！\n共有ランキング機能が利用可能になります。');
+            closeGitHubSetup();
+        } else {
+            alert('❌ 有効なトークンを入力してください。\n\nトークンは "ghp_" で始まる40文字の文字列です。');
+        }
+    } catch (error) {
+        console.error('Token save error:', error);
+        alert('トークンの保存中にエラーが発生しました: ' + error.message);
+    }
+}
+
+// テスト用のトークン削除関数
+function testClearToken() {
+    if (confirm('GitHub トークンを削除しますか？\n共有ランキング機能が使用できなくなります。')) {
+        try {
+            localStorage.removeItem('github_token');
+            
+            if (typeof clearGitHubToken === 'function') {
+                clearGitHubToken();
+                console.log('Token cleared via clearGitHubToken function');
+            } else {
+                console.log('clearGitHubToken function not available, using localStorage only');
+            }
+            
+            alert('✅ GitHub トークンを削除しました。');
+            closeGitHubSetup();
+        } catch (error) {
+            console.error('Token clear error:', error);
+            alert('トークンの削除中にエラーが発生しました: ' + error.message);
+        }
+    }
+}
+
 // GitHub設定画面を表示
 function showGitHubSetup() {
-    const currentToken = getGitHubToken();
+    console.log('showGitHubSetup() called');
     
-    let setupHTML = '<div class="github-setup">';
-    setupHTML += '<h3>⚙️ GitHub共有ランキング設定</h3>';
-    setupHTML += '<p>家族や友達と共有できるランキングシステムを使用するには、GitHub Personal Access Tokenが必要です。</p>';
-    
-    setupHTML += '<div class="setup-steps">';
-    setupHTML += '<h4>設定手順:</h4>';
-    setupHTML += '<ol>';
-    setupHTML += '<li>GitHub.com にログイン</li>';
-    setupHTML += '<li>Settings → Developer settings → Personal access tokens → Tokens (classic)</li>';
-    setupHTML += '<li>"Generate new token (classic)" をクリック</li>';
-    setupHTML += '<li>Note: "Ball Sequence Game Rankings"</li>';
-    setupHTML += '<li>Scopes: "repo" または "public_repo" にチェック</li>';
-    setupHTML += '<li>"Generate token" をクリック</li>';
-    setupHTML += '<li>生成されたトークンを以下に入力</li>';
-    setupHTML += '</ol>';
-    setupHTML += '</div>';
-    
-    setupHTML += '<div class="token-input">';
-    setupHTML += '<label for="github-token">GitHub Personal Access Token:</label>';
+    try {
+        // GitHub設定関数が利用可能か確認
+        if (typeof getGitHubToken !== 'function') {
+            console.error('getGitHubToken function not found');
+            alert('GitHub設定機能の読み込みに失敗しました。ページを再読み込みしてください。');
+            return;
+        }
+        
+        const currentToken = getGitHubToken();
+        console.log('Current token status:', currentToken ? 'Token exists' : 'No token');
+        
+        let setupHTML = '<div class="github-setup">';
+        setupHTML += '<h3>⚙️ GitHub共有ランキング設定</h3>';
+        setupHTML += '<p>家族や友達と共有できるランキングシステムを使用するには、GitHub Personal Access Tokenが必要です。</p>';
+        
+        setupHTML += '<div class="setup-steps">';
+        setupHTML += '<h4>設定手順:</h4>';
+        setupHTML += '<ol>';
+        setupHTML += '<li>GitHub.com にログイン</li>';
+        setupHTML += '<li>Settings → Developer settings → Personal access tokens → Tokens (classic)</li>';
+        setupHTML += '<li>"Generate new token (classic)" をクリック</li>';
+        setupHTML += '<li>Note: "Ball Sequence Game Rankings"</li>';
+        setupHTML += '<li>Scopes: "repo" または "public_repo" にチェック</li>';
+        setupHTML += '<li>"Generate token" をクリック</li>';
+        setupHTML += '<li>生成されたトークンを以下に入力</li>';
+        setupHTML += '</ol>';
+        setupHTML += '</div>';
+        
+        setupHTML += '<div class="token-input">';
+        setupHTML += '<label for="github-token">GitHub Personal Access Token:</label>';
+        setupHTML += `<input type="password" id="github-token" placeholder="ghp_xxxxxxxxxxxx" value="${currentToken || ''}">`;
+        setupHTML += '<button onclick="saveGitHubToken()" class="save-token-btn">💾 保存</button>';
+        setupHTML += '<button onclick="clearGitHubTokenUI()" class="clear-token-btn">🗑️ 削除</button>';
+        setupHTML += '</div>';
+        
+        setupHTML += '<div class="token-status">';
+        if (currentToken) {
+            setupHTML += '<p class="token-ok">✅ トークンが設定されています</p>';
+        } else {
+            setupHTML += '<p class="token-none">❌ トークンが設定されていません</p>';
+        }
+        setupHTML += '</div>';
+        
+        setupHTML += '<button onclick="closeGitHubSetup()" class="close-setup-btn">閉じる</button>';
+        setupHTML += '</div>';
+        
+        // 既存のオーバーレイがあれば削除
+        const existingOverlay = document.querySelector('.github-setup-overlay');
+        if (existingOverlay) {
+            document.body.removeChild(existingOverlay);
+        }
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'github-setup-overlay';
+        overlay.innerHTML = setupHTML;
+        document.body.appendChild(overlay);
+        
+        console.log('GitHub setup overlay created successfully');
+        
+    } catch (error) {
+        console.error('GitHub設定画面の表示でエラーが発生:', error);
+        alert('GitHub設定画面の表示に失敗しました。コンソールを確認してください。');
+    }
+}
     setupHTML += `<input type="password" id="github-token" placeholder="ghp_xxxxxxxxxxxx" value="${currentToken || ''}">`;
     setupHTML += '<button onclick="saveGitHubToken()" class="save-token-btn">💾 保存</button>';
     setupHTML += '<button onclick="clearGitHubTokenUI()" class="clear-token-btn">🗑️ 削除</button>';
@@ -908,73 +1162,4 @@ function showGitHubSetup() {
     overlay.className = 'github-setup-overlay';
     overlay.innerHTML = setupHTML;
     document.body.appendChild(overlay);
-}
-
-// GitHub トークンを保存
-function saveGitHubToken() {
-    const tokenInput = document.getElementById('github-token');
-    const token = tokenInput.value.trim();
-    
-    if (token) {
-        setGitHubToken(token);
-        alert('GitHub トークンを保存しました！共有ランキングが利用できます。');
-        closeGitHubSetup();
-    } else {
-        alert('有効なトークンを入力してください。');
-    }
-}
-
-// GitHub トークンをクリア
-function clearGitHubTokenUI() {
-    if (confirm('GitHub トークンを削除しますか？共有ランキング機能が使用できなくなります。')) {
-        clearGitHubToken();
-        alert('GitHub トークンを削除しました。');
-        closeGitHubSetup();
-    }
-}
-
-// GitHub設定画面を閉じる
-function closeGitHubSetup() {
-    const overlay = document.querySelector('.github-setup-overlay');
-    if (overlay) {
-        document.body.removeChild(overlay);
-    }
-}
-
-// ランキング同期
-async function syncRankings() {
-    try {
-        const syncBtn = document.querySelector('.sync-btn');
-        if (syncBtn) {
-            syncBtn.textContent = '🔄 同期中...';
-            syncBtn.disabled = true;
-        }
-        
-        const success = await githubRanking.syncRankingsFromGitHub();
-        
-        if (success) {
-            alert('ランキング同期完了！');
-            closeRanking();
-            showRanking();
-        } else {
-            alert('同期に失敗しました。ネットワーク接続を確認してください。');
-        }
-    } catch (error) {
-        console.error('同期エラー:', error);
-        alert('同期エラーが発生しました。');
-    } finally {
-        const syncBtn = document.querySelector('.sync-btn');
-        if (syncBtn) {
-            syncBtn.textContent = '🔄 同期';
-            syncBtn.disabled = false;
-        }
-    }
-}
-
-// ランキング表示を閉じる
-function closeRanking() {
-    const overlay = document.querySelector('.ranking-overlay');
-    if (overlay) {
-        document.body.removeChild(overlay);
-    }
 }

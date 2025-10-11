@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ランキング機能テスト</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-area { max-width: 600px; margin: 0 auto; }
+        button { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .ranking-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .ranking-display {
+            background: white; border-radius: 15px; padding: 30px; max-width: 500px; width: 90%;
+            max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        .ranking-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .ranking-table th, .ranking-table td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        .ranking-table th { background-color: #f8f9fa; font-weight: bold; }
+        .close-ranking-btn { background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="test-area">
+        <h1>ランキング機能テスト</h1>
+        
+        <button onclick="testShowRanking()">ランキング表示テスト</button>
+        <button onclick="createTestData()">テストデータ作成</button>
+        <button onclick="clearTestData()">データクリア</button>
+        <button onclick="checkLocalStorage()">LocalStorage確認</button>
+        
+        <div id="status"></div>
+    </div>
+
+    <script>
+        function log(message) {
+            document.getElementById('status').innerHTML += '<p>' + new Date().toLocaleTimeString() + ': ' + message + '</p>';
+        }
+        
+        function testShowRanking() {
+            log('ランキング表示テスト開始');
+            
+            try {
+                const localData = JSON.parse(localStorage.getItem('gameRanking')) || { rankings: [] };
+                log('ローカルデータ取得: ' + localData.rankings.length + '件');
+                
+                let rankingHTML = '<div class="ranking-display">';
+                rankingHTML += '<h2>🏆 テストランキング</h2>';
+                
+                if (localData.rankings.length === 0) {
+                    rankingHTML += '<p>ランキングデータがありません。</p>';
+                } else {
+                    rankingHTML += '<table class="ranking-table">';
+                    rankingHTML += '<thead><tr><th>順位</th><th>名前</th><th>時間</th><th>正解率</th><th>日時</th></tr></thead>';
+                    rankingHTML += '<tbody>';
+                    
+                    localData.rankings.slice(0, 10).forEach((ranking, index) => {
+                        const playDate = new Date(ranking.playDate).toLocaleDateString('ja-JP');
+                        rankingHTML += `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${ranking.playerName}</td>
+                                <td>${ranking.finalScore.toFixed(2)}秒</td>
+                                <td>${ranking.accuracy.toFixed(1)}%</td>
+                                <td>${playDate}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    rankingHTML += '</tbody></table>';
+                }
+                
+                rankingHTML += '<button onclick="closeTestRanking()" class="close-ranking-btn">閉じる</button>';
+                rankingHTML += '</div>';
+                
+                const overlay = document.createElement('div');
+                overlay.className = 'ranking-overlay';
+                overlay.innerHTML = rankingHTML;
+                document.body.appendChild(overlay);
+                
+                log('ランキング表示成功');
+                
+            } catch (error) {
+                log('エラー: ' + error.message);
+            }
+        }
+        
+        function closeTestRanking() {
+            const overlay = document.querySelector('.ranking-overlay');
+            if (overlay) {
+                document.body.removeChild(overlay);
+                log('ランキング画面を閉じました');
+            }
+        }
+        
+        function createTestData() {
+            const testData = {
+                rankings: [
+                    {
+                        id: Date.now(),
+                        playerName: 'テストプレイヤー1',
+                        finalScore: 25.50,
+                        accuracy: 95.0,
+                        wrongClicks: 1,
+                        playDate: new Date().toISOString()
+                    },
+                    {
+                        id: Date.now() + 1,
+                        playerName: 'テストプレイヤー2',
+                        finalScore: 30.25,
+                        accuracy: 90.5,
+                        wrongClicks: 2,
+                        playDate: new Date().toISOString()
+                    }
+                ],
+                lastUpdated: new Date().toISOString(),
+                totalPlayers: 2
+            };
+            
+            localStorage.setItem('gameRanking', JSON.stringify(testData));
+            log('テストデータを作成しました');
+        }
+        
+        function clearTestData() {
+            localStorage.removeItem('gameRanking');
+            log('テストデータを削除しました');
+        }
+        
+        function checkLocalStorage() {
+            const data = localStorage.getItem('gameRanking');
+            if (data) {
+                const parsed = JSON.parse(data);
+                log('LocalStorage: ' + parsed.rankings.length + '件のランキング');
+            } else {
+                log('LocalStorage: ランキングデータなし');
+            }
+        }
+        
+        // 初期化
+        log('ランキング機能テストページが読み込まれました');
+    </script>
+</body>
+</html>
