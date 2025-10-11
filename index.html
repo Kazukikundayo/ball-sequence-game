@@ -3,13 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ボール順番選択ゲーム</title>
+    <title>5x5グリッドパネルゲーム</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- 星空背景パーティクル -->
-    <div id="particles-background"></div>
-    
     <div class="container">
         <h1>ボール順番選択ゲーム</h1>
         
@@ -46,6 +43,8 @@
             <button id="start-btn">ゲーム開始（音楽付き）</button>
             <button id="reset-btn">リセット</button>
             <button id="music-btn" class="music-control">🎵 音楽ON/OFF</button>
+            <button id="ranking-btn" class="ranking-control">🏆 ランキング</button>
+            <button id="test-sound-btn" style="background: orange; color: white;">🔊 音テスト</button>
         </div>
         <!-- モバイル用：情報パネルとボタンを1行に配置 -->
         <div class="mobile-controls">
@@ -58,6 +57,7 @@
                 <button id="start-btn-mobile">開始</button>
                 <button id="reset-btn-mobile">終了</button>
                 <button id="music-btn-mobile">🎵</button>
+                <button id="ranking-btn-mobile">🏆</button>
             </div>
         </div>
         

@@ -1,0 +1,17 @@
+{
+  "rankings": [
+    {
+      "id": 1,
+      "playerName": "TestPlayer",
+      "clearTime": 45.5,
+      "accuracy": 100.0,
+      "wrongClicks": 0,
+      "penaltyTime": 0,
+      "finalScore": 45.5,
+      "playDate": "2025-01-01T12:00:00Z",
+      "difficulty": "5x5"
+    }
+  ],
+  "lastUpdated": "2025-01-01T12:00:00Z",
+  "totalPlayers": 1
+}

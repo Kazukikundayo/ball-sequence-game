@@ -10,38 +10,9 @@ let gameState = {
     timeoutTimer: null,  // 5秒タイムアウト用タイマー
     timeoutStartTime: null,  // タイムアウト開始時刻
     wrongClicks: 0,      // 間違ったクリック数
-    penaltyTime: 0       // ペナルティ時間（秒）
+    penaltyTime: 0,       // ペナルティ時間（秒）
+    lastScore: null      // 最後のスコア（ランキング用）
 };
-
-// ボールのサイズとカラーと形状の定義
-const ballSizes = ['small', 'medium', 'large', 'xlarge', 'xxlarge']; // 5種類に拡張
-const ballColors = ['red', 'blue', 'yellow', 'green', 'orange', 'pink', 'gray', 'brown', 'purple', 'lightpink'];
-const ballShapes = ['circle', 'triangle', 'square', 'diamond']; // 図形の種類を追加
-
-// サイズごとの実際のピクセルサイズ（配置計算用） - 5種類に拡張
-const sizePixels = {
-    'small': 100,   // 小サイズ
-    'medium': 150,  // 中サイズ
-    'large': 200,   // 大サイズ
-    'xlarge': 400,  // 特大サイズ
-    'xxlarge': 500  // 超特大サイズ
-};
-
-// モバイル向けサイズ調整
-function getActualBallSize(size) {
-    if (window.innerWidth <= 480) {
-        const mobileSizes = { 
-            'small': 35, 'medium': 45, 'large': 55, 'xlarge': 65, 'xxlarge': 75
-        };
-        return mobileSizes[size];
-    } else if (window.innerWidth <= 768) {
-        const tabletSizes = { 
-            'small': 55, 'medium': 75, 'large': 95, 'xlarge': 115, 'xxlarge': 135
-        };
-        return tabletSizes[size];
-    }
-    return sizePixels[size];
-}
 
 // DOM要素の取得
 const elements = {
@@ -68,7 +39,10 @@ const elements = {
     scoreMobile: document.getElementById('score-mobile'),
     startBtnMobile: document.getElementById('start-btn-mobile'),
     resetBtnMobile: document.getElementById('reset-btn-mobile'),
-    musicBtnMobile: document.getElementById('music-btn-mobile')
+    musicBtnMobile: document.getElementById('music-btn-mobile'),
+    // ランキング用要素
+    rankingBtn: document.getElementById('ranking-btn'),
+    rankingBtnMobile: document.getElementById('ranking-btn-mobile')
 };
 
 // デバッグ用：要素の存在確認
@@ -76,7 +50,12 @@ console.log('DOM Elements check:', {
     startBtn: !!elements.startBtn,
     gameArea: !!elements.gameArea,
     timer: !!elements.timer,
-    backgroundMusic: !!elements.backgroundMusic
+    backgroundMusic: !!elements.backgroundMusic,
+    clickSound: !!elements.clickSound,
+    result: !!elements.result,
+    actualTime: !!elements.actualTime,
+    penaltyTime: !!elements.penaltyTime,
+    finalTime: !!elements.finalTime
 });
 
 // 音楽状態管理
@@ -84,102 +63,6 @@ const musicState = {
     isPlaying: false,
     volume: 0.5
 };
-
-// 星空パーティクル初期化
-function initStarryBackground() {
-    const particlesContainer = document.getElementById('particles-background');
-    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#fd79a8', '#a29bfe', '#fd63f6', '#55a3ff', '#00b894'];
-    
-    for (let i = 0; i < 80; i++) {
-        const particle = document.createElement('div');
-        
-        // ランダムな位置
-        const x = Math.random() * 100;
-        const y = Math.random() * 120 - 20; // 画面外上部からも開始
-        
-        // ランダムなサイズ（4-8px）
-        const size = Math.random() * 4 + 4;
-        
-        // ランダムなアニメーション遅延（0-10秒の範囲）
-        const delay = Math.random() * 10;
-        
-        // ランダムなアニメーション時間（5-8秒）
-        const duration = Math.random() * 3 + 5;
-        
-        // ランダムな色
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        
-        particle.style.cssText = `
-            position: absolute;
-            left: ${x}%;
-            top: ${y}%;
-            width: ${size}px;
-            height: ${size}px;
-            background: ${color};
-            border-radius: 50%;
-            animation: simpleParticleTwinkle ${duration}s linear ${delay}s infinite;
-            opacity: 0.8;
-        `;
-        
-        particlesContainer.appendChild(particle);
-    }
-    
-    // CSS for particle animation
-    if (!document.querySelector('#particle-animation')) {
-        const style = document.createElement('style');
-        style.id = 'particle-animation';
-        style.textContent = `
-            @keyframes simpleParticleTwinkle {
-                0% { opacity: 0.8; transform: translateY(-50px); }
-                100% { opacity: 0.2; transform: translateY(calc(100vh + 50px)); }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-}
-
-// ゲームエリア内の星空初期化
-function initGameAreaStars() {
-    const gameArea = document.getElementById('game-area');
-    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#fd79a8'];
-    
-    for (let i = 0; i < 35; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'game-particle';
-        
-        // ゲームエリア内のランダムな位置
-        const x = Math.random() * 95 + 2.5;
-        const y = Math.random() * 110 - 10; // 画面外上部からも開始
-        
-        // 小さめのサイズ（2-4px）
-        const size = Math.random() * 2 + 2;
-        
-        // ランダムなアニメーション遅延（0-8秒）
-        const delay = Math.random() * 8;
-        
-        // ランダムなアニメーション時間（6-9秒）
-        const duration = Math.random() * 3 + 6;
-        
-        // ランダムな色
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        
-        particle.style.cssText = `
-            position: absolute;
-            left: ${x}%;
-            top: ${y}%;
-            width: ${size}px;
-            height: ${size}px;
-            background: ${color};
-            border-radius: 50%;
-            animation: gameAreaParticleFall ${duration}s linear ${delay}s infinite;
-            opacity: 0.4;
-            pointer-events: none;
-            z-index: 1;
-        `;
-        
-        gameArea.appendChild(particle);
-    }
-}
 
 // 音楽再生の共通関数
 function playBackgroundMusic() {
@@ -293,153 +176,111 @@ function startGame() {
     }
 }
 
-// ボール生成（重なり防止機能付き）
+// 5x5グリッドパネル生成
 function generateBalls() {
+    console.log('Creating 5x5 grid panels...');
+    
     elements.gameArea.innerHTML = '';
     
-    const availableWidth = elements.gameArea.clientWidth - 40;
-    const availableHeight = elements.gameArea.clientHeight - 40;
+    // 1-25の数字をランダムに配置
+    const numbers = Array.from({length: 25}, (_, i) => i + 1);
     
-    console.log(`Generating ${gameState.totalBalls} balls in area: ${availableWidth} x ${availableHeight}`);
-    
-    const placedBalls = [];
-    const maxAttempts = 100;
-    
-    // ボール情報を生成（番号、サイズ、色、形状）
-    const ballsData = [];
-    for (let i = 1; i <= gameState.totalBalls; i++) {
-        const randomSize = ballSizes[Math.floor(Math.random() * ballSizes.length)];
-        const randomColor = ballColors[Math.floor(Math.random() * ballColors.length)];
-        const randomShape = ballShapes[Math.floor(Math.random() * ballShapes.length)];
-        ballsData.push({
-            number: i,
-            size: randomSize,
-            color: randomColor,
-            shape: randomShape,
-            actualSize: Math.min(getActualBallSize(randomSize), availableWidth * 0.4, availableHeight * 0.4)
-        });
+    // Fisher-Yatesアルゴリズムでランダムにシャッフル
+    for (let i = numbers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
     }
     
-    // サイズ順でソート（大きいボールを先に配置）
-    ballsData.sort((a, b) => b.actualSize - a.actualSize);
+    // カラーパレット定義
+    const colors = [
+        { name: 'red', gradient: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)' },
+        { name: 'blue', gradient: 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)' },
+        { name: 'yellow', gradient: 'linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%)' },
+        { name: 'green', gradient: 'linear-gradient(135deg, #55efc4 0%, #2ecc71 100%)' },
+        { name: 'pink', gradient: 'linear-gradient(135deg, #fd79a8 0%, #e84393 100%)' },
+        { name: 'grey', gradient: 'linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%)' },
+        { name: 'brown', gradient: 'linear-gradient(135deg, #d4a574 0%, #8b4513 100%)' }
+    ];
     
-    for (let ballData of ballsData) {
-        const ball = document.createElement('div');
-        ball.className = 'ball';
-        ball.dataset.number = ballData.number;
+    // 5x5グリッドにパネルを配置
+    for (let i = 0; i < 25; i++) {
+        const panel = document.createElement('div');
+        panel.className = 'number-panel';
+        panel.textContent = numbers[i];
+        panel.dataset.number = numbers[i];
         
-        ball.classList.add(`size-${ballData.size}`, `color-${ballData.color}`, `shape-${ballData.shape}`);
+        // ランダムな色を選択
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
         
-        // ダイヤモンド形状の場合、数字を囲むdivを追加
-        if (ballData.shape === 'diamond') {
-            const content = document.createElement('div');
-            content.className = 'ball-content';
-            content.textContent = ballData.number;
-            ball.appendChild(content);
-        } else {
-            ball.textContent = ballData.number;
-        }
+        // パネルのスタイル
+        panel.style.cssText = `
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: ${randomColor.gradient};
+            color: white;
+            font-size: clamp(16px, 4vw, 24px);
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        `;
         
-        let positioned = false;
-        let attempts = 0;
-        
-        while (!positioned && attempts < maxAttempts) {
-            // ランダム配置
-            const x = Math.random() * (availableWidth - ballData.actualSize) + 20;
-            const y = Math.random() * (availableHeight - ballData.actualSize) + 20;
-            
-            // 他のボールとの重複チェック（より厳密に）
-            const hasOverlap = placedBalls.some(placedBall => {
-                // 2つのボールの中心間距離を計算
-                const ballCenterX = x + ballData.actualSize / 2;
-                const ballCenterY = y + ballData.actualSize / 2;
-                const placedCenterX = placedBall.x;
-                const placedCenterY = placedBall.y;
-                
-                const distance = Math.sqrt(
-                    Math.pow(ballCenterX - placedCenterX, 2) + Math.pow(ballCenterY - placedCenterY, 2)
-                );
-                
-                // より大きな安全距離を確保
-                const maxSize = Math.max(ballData.actualSize, placedBall.size);
-                const minSize = Math.min(ballData.actualSize, placedBall.size);
-                const baseSafeDistance = (ballData.actualSize + placedBall.size) / 2;
-                const extraSafeDistance = maxSize * 0.4 + minSize * 0.3; // より大きな安全距離
-                const safeDistance = baseSafeDistance + extraSafeDistance;
-                
-                return distance < safeDistance;
-            });
-            
-            if (!hasOverlap) {
-                // 配置成功
-                ball.style.left = x + 'px';
-                ball.style.top = y + 'px';
-                
-                // ボールクリックイベント
-                ball.addEventListener('click', () => handleBallClick(ballData.number, ball));
-                
-                elements.gameArea.appendChild(ball);
-                
-                // 配置済みリストに追加
-                placedBalls.push({
-                    x: x + ballData.actualSize / 2,
-                    y: y + ballData.actualSize / 2,
-                    size: ballData.actualSize
-                });
-                
-                positioned = true;
-                console.log(`Ball ${ballData.number} placed at (${x.toFixed(1)}, ${y.toFixed(1)}) with size ${ballData.size}`);
+        // ホバー効果のためのイベントリスナー
+        panel.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('clicked')) {
+                this.style.transform = 'scale(1.05)';
+                this.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.3)';
             }
-            
-            attempts++;
-        }
+        });
         
-        // 配置に失敗した場合は小さいサイズで強制配置
-        if (!positioned) {
-            const minSize = getActualBallSize('small');
-            const x = Math.random() * (availableWidth - minSize) + 20;
-            const y = Math.random() * (availableHeight - minSize) + 20;
-            
-            ball.style.left = x + 'px';
-            ball.style.top = y + 'px';
-            ball.classList.remove(`size-${ballData.size}`);
-            ball.classList.add('size-small');
-            
-            ball.addEventListener('click', () => handleBallClick(ballData.number, ball));
-            elements.gameArea.appendChild(ball);
-            
-            console.log(`Ball ${ballData.number} force placed at minimum size`);
-        }
+        panel.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('clicked')) {
+                this.style.transform = 'scale(1)';
+                this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+            }
+        });
+        
+        // クリックイベント
+        panel.addEventListener('click', () => handleBallClick(numbers[i], panel));
+        
+        elements.gameArea.appendChild(panel);
     }
+    
+    console.log('Grid panels created: 25 panels');
 }
 
-// ボールクリック処理
+// ボールクリック処理（簡素化版）
 function handleBallClick(number, ballElement) {
-    if (!gameState.isPlaying) return;
+    console.log(`=== クリック処理 ===`);
+    console.log(`クリックされた数字: ${number}, 期待する数字: ${gameState.currentNumber}`);
+    console.log(`ゲーム中: ${gameState.isPlaying}`);
+    
+    if (!gameState.isPlaying) {
+        console.log('❌ ゲーム中ではありません');
+        return;
+    }
     
     if (number === gameState.currentNumber) {
-        // 正解
+        console.log('✅ 正解！');
+        
+        // 音を再生
         playSuccessSound();
+        
+        // パネルの見た目を変更
         ballElement.classList.add('correct', 'selected');
         
         // タイムアウト警告を停止
         clearTimeoutWarning();
         
-        // パーティクル効果を追加
-        createParticleExplosion(ballElement);
-        createRippleEffect(ballElement);
-        
-        // ボールを消去するアニメーション
+        // パネルを非表示にするアニメーション
         setTimeout(() => {
             ballElement.style.transform = 'scale(0) rotate(360deg)';
             ballElement.style.opacity = '0';
-            
-            // 完全に消去
-            setTimeout(() => {
-                if (ballElement.parentNode) {
-                    ballElement.parentNode.removeChild(ballElement);
-                }
-            }, 300);
+            ballElement.style.pointerEvents = 'none';
+            ballElement.style.visibility = 'hidden';
         }, 400);
         
         gameState.score++;
@@ -449,15 +290,17 @@ function handleBallClick(number, ballElement) {
         
         // ゲーム完了チェック
         if (gameState.currentNumber > gameState.totalBalls) {
+            console.log('🎉 ゲーム完了！');
             endGame();
         } else {
             // 次のボール用のタイムアウトタイマーを開始
             startTimeoutTimer();
         }
     } else {
+        console.log('❌ 不正解');
         // 不正解
         gameState.wrongClicks++;
-        gameState.penaltyTime += 2; // ペナルティ +2秒
+        gameState.penaltyTime += 2;
         
         playErrorSound();
         ballElement.classList.add('wrong');
@@ -469,20 +312,39 @@ function handleBallClick(number, ballElement) {
     }
 }
 
-// 効果音を再生する関数
+// 効果音を再生する関数（簡素化版）
 function playSuccessSound() {
+    console.log('=== playSuccessSound 開始 ===');
+    
+    const clickSound = document.getElementById('click-sound');
+    console.log('clickSound:', clickSound);
+    
+    if (!clickSound) {
+        console.error('❌ click-sound要素が見つかりません');
+        return;
+    }
+    
     try {
-        elements.clickSound.currentTime = 0; // 音声を最初から再生
-        elements.clickSound.volume = 0.7; // 音量設定
-        const playPromise = elements.clickSound.play();
+        clickSound.volume = 0.7;
+        clickSound.currentTime = 0;
+        
+        // ブラウザによってはユーザーインタラクション後でないと音が再生されない
+        const playPromise = clickSound.play();
         
         if (playPromise !== undefined) {
-            playPromise.catch(error => {
-                console.log('Click sound play failed:', error.message);
-            });
+            playPromise
+                .then(() => {
+                    console.log('✅ 音声再生成功！');
+                })
+                .catch(error => {
+                    console.error('❌ 音声再生失敗:', error.name, error.message);
+                    if (error.name === 'NotAllowedError') {
+                        console.error('🔇 ブラウザが音声再生をブロックしています。ユーザーがページを操作した後に音が再生されます。');
+                    }
+                });
         }
     } catch (error) {
-        console.log('Click sound error:', error.message);
+        console.error('❌ 音声再生でエラー:', error);
     }
 }
 
@@ -501,15 +363,6 @@ function playClearSound() {
     } catch (error) {
         console.log('クリア音エラー:', error);
     }
-}
-
-// パーティクル効果（簡易版）
-function createParticleExplosion(ballElement) {
-    console.log('Particle explosion for ball:', ballElement.textContent);
-}
-
-function createRippleEffect(ballElement) {
-    console.log('Ripple effect for ball:', ballElement.textContent);
 }
 
 // タイマー関連
@@ -551,33 +404,33 @@ function startTimeoutTimer() {
     clearTimeout(gameState.timeoutTimer);
     gameState.timeoutStartTime = Date.now();
     
-    console.log(`Starting timeout timer for ball ${gameState.currentNumber}`);
+    console.log(`Starting timeout timer for panel ${gameState.currentNumber}`);
     
     gameState.timeoutTimer = setTimeout(() => {
         if (gameState.isPlaying) {
-            console.log(`2 seconds passed, highlighting ball ${gameState.currentNumber}`);
+            console.log(`5 seconds passed, highlighting panel ${gameState.currentNumber}`);
             highlightCurrentBall();
         }
-    }, 2000); // テスト用に2秒に短縮
+    }, 5000); // 5秒に設定
 }
 
 function highlightCurrentBall() {
-    // 現在のボールを見つけて点滅させる
-    const currentBalls = elements.gameArea.querySelectorAll('.ball');
-    currentBalls.forEach(ball => {
-        const ballNumber = parseInt(ball.textContent);
-        if (ballNumber === gameState.currentNumber) {
-            ball.classList.add('timeout-warning');
-            console.log(`Ball ${ballNumber} is now blinking (timeout warning)`);
+    // 現在のパネルを見つけて点滅させる
+    const currentPanels = elements.gameArea.querySelectorAll('.number-panel');
+    currentPanels.forEach(panel => {
+        const panelNumber = parseInt(panel.dataset.number);
+        if (panelNumber === gameState.currentNumber && !panel.classList.contains('clicked')) {
+            panel.classList.add('timeout-warning');
+            console.log(`Panel ${panelNumber} is now blinking (timeout warning)`);
         }
     });
 }
 
 function clearTimeoutWarning() {
     // 点滅を停止
-    const currentBalls = elements.gameArea.querySelectorAll('.ball');
-    currentBalls.forEach(ball => {
-        ball.classList.remove('timeout-warning');
+    const currentPanels = elements.gameArea.querySelectorAll('.number-panel');
+    currentPanels.forEach(panel => {
+        panel.classList.remove('timeout-warning');
     });
     clearTimeout(gameState.timeoutTimer);
     console.log('Timeout warning cleared');
@@ -612,16 +465,61 @@ function endGame() {
     
     // 結果表示
     const totalTime = gameState.elapsedTime + gameState.penaltyTime;
-    elements.actualTime.textContent = gameState.elapsedTime.toFixed(2);
-    elements.penaltyTime.textContent = gameState.penaltyTime.toFixed(2);
-    elements.finalTime.textContent = totalTime.toFixed(2);
-    elements.accuracyRate.textContent = accuracy;
-    elements.finalGrade.textContent = grade;
     
-    elements.result.style.display = 'block';
+    console.log('=== 結果画面表示処理開始 ===');
+    
+    // 結果要素を直接取得
+    const resultElement = document.getElementById('result');
+    console.log('result element:', resultElement);
+    
+    if (!resultElement) {
+        console.error('❌ result要素が見つかりません！');
+        return;
+    }
+    
+    // 各要素に値を設定
+    const actualTimeElement = document.getElementById('actual-time');
+    const penaltyTimeElement = document.getElementById('penalty-time');
+    const finalTimeElement = document.getElementById('final-time');
+    const accuracyRateElement = document.getElementById('accuracy-rate');
+    const finalGradeElement = document.getElementById('final-grade');
+    
+    if (actualTimeElement) actualTimeElement.textContent = gameState.elapsedTime.toFixed(2);
+    if (penaltyTimeElement) penaltyTimeElement.textContent = gameState.penaltyTime.toFixed(2);
+    if (finalTimeElement) finalTimeElement.textContent = totalTime.toFixed(2);
+    if (accuracyRateElement) accuracyRateElement.textContent = accuracy;
+    if (finalGradeElement) finalGradeElement.textContent = grade;
+    
+    // 結果画面を表示
+    resultElement.style.display = 'block';
+    resultElement.style.visibility = 'visible';
+    resultElement.style.opacity = '1';
+    resultElement.style.zIndex = '9999';
+    
+    console.log('✅ 結果画面表示完了');
+    console.log('display:', resultElement.style.display);
+    console.log('visibility:', resultElement.style.visibility);
+    console.log('opacity:', resultElement.style.opacity);
+    
     elements.startBtn.disabled = false;
     
     console.log(`ゲーム結果: 実時間${gameState.elapsedTime.toFixed(2)}秒, ペナルティ${gameState.penaltyTime}秒, 合計${totalTime.toFixed(2)}秒, 正答率${accuracy}%, 間違い${gameState.wrongClicks}回`);
+    
+    // ランキング候補として保存（名前入力待ち）
+    gameState.lastScore = {
+        clearTime: gameState.elapsedTime,
+        accuracy: parseFloat(accuracy),
+        wrongClicks: gameState.wrongClicks,
+        penaltyTime: gameState.penaltyTime,
+        finalScore: totalTime,
+        playDate: new Date().toISOString(),
+        difficulty: "5x5"
+    };
+    
+    // クリア画面を少し表示してから名前入力フォームを表示
+    setTimeout(() => {
+        showNameInputForm();
+    }, 2000); // 2秒後に名前入力
     
     // 音楽の音量を元に戻す
     if (musicState.isPlaying && elements.backgroundMusic) {
@@ -649,12 +547,11 @@ function resetGame() {
     stopTimer();
     clearTimeoutWarning(); // タイムアウト機能も停止
     
-    elements.gameArea.innerHTML = '';
+    // パネルを新しい配置で再生成
+    generateBalls();
+    
     elements.result.style.display = 'none';
     elements.startBtn.disabled = false;
-    
-    // ゲームエリアの星を再生成
-    initGameAreaStars();
     
     updateUI();
 }
@@ -663,11 +560,24 @@ function resetGame() {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing game...');
     
-    // 星空背景を初期化
-    initStarryBackground();
+    // 重要な要素の存在確認
+    console.log('=== 重要な要素の確認 ===');
+    console.log('result element:', elements.result);
+    console.log('clickSound element:', elements.clickSound);
+    console.log('gameArea element:', elements.gameArea);
+    console.log('startBtn element:', elements.startBtn);
     
-    // ゲームエリア内の星空も初期化
-    initGameAreaStars();
+    // 音声ファイルの存在確認
+    if (elements.clickSound) {
+        console.log('Click sound src:', elements.clickSound.src);
+        console.log('Click sound readyState:', elements.clickSound.readyState);
+    }
+    
+    // 音声ファイルをプリロード
+    if (elements.clickSound) {
+        elements.clickSound.load();
+        console.log('Click sound loaded');
+    }
     
     // イベントリスナーの設定
     elements.startBtn.addEventListener('click', function() {
@@ -690,6 +600,23 @@ document.addEventListener('DOMContentLoaded', function() {
     if (elements.musicBtnMobile) {
         elements.musicBtnMobile.addEventListener('click', toggleBackgroundMusic);
     }
+    if (elements.rankingBtnMobile) {
+        elements.rankingBtnMobile.addEventListener('click', showRanking);
+    }
+    
+    // ランキングボタンのイベントリスナー
+    if (elements.rankingBtn) {
+        elements.rankingBtn.addEventListener('click', showRanking);
+    }
+    
+    // テスト音ボタンのイベントリスナー
+    const testSoundBtn = document.getElementById('test-sound-btn');
+    if (testSoundBtn) {
+        testSoundBtn.addEventListener('click', function() {
+            console.log('🔊 テスト音ボタンがクリックされました');
+            playSuccessSound();
+        });
+    }
     
     elements.playAgainBtn.addEventListener('click', () => {
         elements.result.style.display = 'none';
@@ -702,3 +629,135 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('Game initialized successfully');
 });
+
+// ============ ランキング機能 ============
+
+// 名前入力フォームを表示
+function showNameInputForm() {
+    const playerName = prompt(`🎉 ゲームクリアおめでとうございます！ 🎉\n\n⏱️ クリア時間: ${gameState.lastScore.finalScore.toFixed(2)}秒\n🎯 正解率: ${gameState.lastScore.accuracy}%\n\n🏆 ランキングに登録しますか？\n名前を入力してください（キャンセルでスキップ）:`);
+    
+    if (playerName && playerName.trim()) {
+        gameState.lastScore.playerName = playerName.trim();
+        saveRanking(gameState.lastScore);
+    } else {
+        console.log('ランキング登録をスキップしました');
+    }
+}
+
+// ランキングデータを読み込み
+async function loadRanking() {
+    try {
+        const response = await fetch('./ranking.json');
+        if (!response.ok) {
+            throw new Error('ランキングファイルが見つかりません');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('ランキング読み込みエラー:', error);
+        // 初期データを返す
+        return {
+            rankings: [],
+            lastUpdated: new Date().toISOString(),
+            totalPlayers: 0
+        };
+    }
+}
+
+// ランキングデータを保存（ローカルストレージ版 - JSONファイル直接書き込みはブラウザで制限されるため）
+async function saveRanking(newScore) {
+    try {
+        // ローカルストレージからランキングデータを取得
+        let rankingData = JSON.parse(localStorage.getItem('gameRanking')) || {
+            rankings: [],
+            lastUpdated: new Date().toISOString(),
+            totalPlayers: 0
+        };
+        
+        // 新しいスコアを追加
+        const newRanking = {
+            id: Date.now(),
+            playerName: newScore.playerName,
+            clearTime: newScore.clearTime,
+            accuracy: newScore.accuracy,
+            wrongClicks: newScore.wrongClicks,
+            penaltyTime: newScore.penaltyTime,
+            finalScore: newScore.finalScore,
+            playDate: newScore.playDate,
+            difficulty: newScore.difficulty
+        };
+        
+        rankingData.rankings.push(newRanking);
+        
+        // スコア順にソート（短い時間が上位）
+        rankingData.rankings.sort((a, b) => a.finalScore - b.finalScore);
+        
+        // トップ50のみ保持
+        rankingData.rankings = rankingData.rankings.slice(0, 50);
+        
+        // 更新情報を設定
+        rankingData.lastUpdated = new Date().toISOString();
+        rankingData.totalPlayers = rankingData.rankings.length;
+        
+        // ローカルストレージに保存
+        localStorage.setItem('gameRanking', JSON.stringify(rankingData));
+        
+        console.log('ランキング保存完了:', newRanking);
+        
+        // ランキング表示
+        showRanking();
+        
+    } catch (error) {
+        console.error('ランキング保存エラー:', error);
+        alert('ランキングの保存に失敗しました。');
+    }
+}
+
+// ランキングを表示
+function showRanking() {
+    const rankingData = JSON.parse(localStorage.getItem('gameRanking')) || { rankings: [] };
+    
+    let rankingHTML = '<div class="ranking-display">';
+    rankingHTML += '<h2>🏆 ランキング TOP 20</h2>';
+    
+    if (rankingData.rankings.length === 0) {
+        rankingHTML += '<p>まだランキングデータがありません。</p>';
+    } else {
+        rankingHTML += '<table class="ranking-table">';
+        rankingHTML += '<thead><tr><th>順位</th><th>名前</th><th>時間</th><th>正解率</th><th>日時</th></tr></thead>';
+        rankingHTML += '<tbody>';
+        
+        const topRankings = rankingData.rankings.slice(0, 20);
+        topRankings.forEach((ranking, index) => {
+            const playDate = new Date(ranking.playDate).toLocaleDateString('ja-JP');
+            rankingHTML += `
+                <tr class="${index < 3 ? 'top-rank' : ''}">
+                    <td>${index + 1}</td>
+                    <td>${ranking.playerName}</td>
+                    <td>${ranking.finalScore.toFixed(2)}秒</td>
+                    <td>${ranking.accuracy.toFixed(1)}%</td>
+                    <td>${playDate}</td>
+                </tr>
+            `;
+        });
+        
+        rankingHTML += '</tbody></table>';
+    }
+    
+    rankingHTML += '<button onclick="closeRanking()" class="close-ranking-btn">閉じる</button>';
+    rankingHTML += '</div>';
+    
+    // ランキング表示用のオーバーレイを作成
+    const overlay = document.createElement('div');
+    overlay.className = 'ranking-overlay';
+    overlay.innerHTML = rankingHTML;
+    document.body.appendChild(overlay);
+}
+
+// ランキング表示を閉じる
+function closeRanking() {
+    const overlay = document.querySelector('.ranking-overlay');
+    if (overlay) {
+        document.body.removeChild(overlay);
+    }
+}

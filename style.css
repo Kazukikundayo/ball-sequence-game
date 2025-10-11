@@ -4,119 +4,24 @@
     box-sizing: border-box;
 }
 
-@keyframes simpleParticleFall {
-    0% { 
-        transform: translateY(-100px);
-        opacity: 1;
-    }
-    100% { 
-        transform: translateY(calc(100vh + 100px));
-        opacity: 0.3;
-    }
-}
-
-@keyframes simpleParticleRain {
-    0% { 
-        transform: translateY(-80px);
-        opacity: 0.8;
-    }
-    100% { 
-        transform: translateY(calc(100vh + 80px));
-        opacity: 0.2;
-    }
-}
-
-/* 星空背景パーティクル */
-#particles-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+/* グリッドパネルゲーム用スタイル */
+html, body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%) !important; /* 柔らかいブルー〜グリーングラデーション */
+    height: 100vh;
     overflow: hidden;
-}
-
-/* 固定の粒子背景（隙間埋め用） */
-#particles-background {
-    background-image: 
-        radial-gradient(3px 3px at 15px 15px, #ff6b6b, transparent),
-        radial-gradient(2px 2px at 45px 35px, #4ecdc4, transparent),
-        radial-gradient(4px 4px at 75px 55px, #45b7d1, transparent),
-        radial-gradient(3px 3px at 105px 25px, #96ceb4, transparent),
-        radial-gradient(2px 2px at 135px 45px, #ffeaa7, transparent),
-        radial-gradient(3px 3px at 165px 65px, #fd79a8, transparent),
-        radial-gradient(2px 2px at 195px 15px, #a29bfe, transparent),
-        radial-gradient(4px 4px at 225px 75px, #fd63f6, transparent),
-        radial-gradient(3px 3px at 255px 35px, #55a3ff, transparent),
-        radial-gradient(2px 2px at 285px 55px, #00b894, transparent);
-    background-repeat: repeat;
-    background-size: 300px 90px;
-}
-
-#particles-background::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: 
-        radial-gradient(4px 4px at 20px 30px, #ff6b6b, transparent),
-        radial-gradient(3px 3px at 80px 60px, #4ecdc4, transparent),
-        radial-gradient(5px 5px at 140px 20px, #45b7d1, transparent),
-        radial-gradient(4px 4px at 200px 80px, #96ceb4, transparent),
-        radial-gradient(3px 3px at 260px 40px, #ffeaa7, transparent),
-        radial-gradient(4px 4px at 320px 70px, #fd79a8, transparent),
-        radial-gradient(3px 3px at 380px 10px, #a29bfe, transparent),
-        radial-gradient(5px 5px at 440px 50px, #fd63f6, transparent),
-        radial-gradient(4px 4px at 500px 90px, #55a3ff, transparent),
-        radial-gradient(3px 3px at 560px 25px, #00b894, transparent),
-        radial-gradient(4px 4px at 20px 120px, #fdcb6e, transparent),
-        radial-gradient(3px 3px at 80px 150px, #e17055, transparent);
-    background-repeat: repeat;
-    background-size: 600px 180px;
-    animation: simpleParticleFall 6s linear infinite;
-}
-
-#particles-background::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: 
-        radial-gradient(3px 3px at 50px 25px, #a29bfe, transparent),
-        radial-gradient(4px 4px at 120px 55px, #fd63f6, transparent),
-        radial-gradient(3px 3px at 190px 15px, #55a3ff, transparent),
-        radial-gradient(5px 5px at 250px 75px, #00b894, transparent),
-        radial-gradient(4px 4px at 310px 35px, #fdcb6e, transparent),
-        radial-gradient(3px 3px at 370px 65px, #e17055, transparent),
-        radial-gradient(4px 4px at 430px 5px, #ff6b6b, transparent),
-        radial-gradient(3px 3px at 490px 45px, #4ecdc4, transparent),
-        radial-gradient(5px 5px at 550px 85px, #45b7d1, transparent),
-        radial-gradient(4px 4px at 50px 115px, #96ceb4, transparent),
-        radial-gradient(3px 3px at 120px 145px, #ffeaa7, transparent),
-        radial-gradient(4px 4px at 190px 105px, #fd79a8, transparent);
-    background-repeat: repeat;
-    background-size: 600px 170px;
-    animation: simpleParticleRain 4s linear infinite;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    background: transparent;
-    height: 100vh;
-    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .container {
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(255, 255, 255, 0.1); /* 背景を透明に近くして下のグラデーションを見せる */
     border-radius: 20px;
     padding: 15px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
@@ -325,13 +230,13 @@ button {
     }
 }
 
-.ball.timeout-warning {
+.number-panel.timeout-warning {
     animation: timeoutBlink 0.4s ease-in-out infinite !important;
     z-index: 1000 !important;
 }
 
 .result {
-    position: absolute; /* ゲーム画面内に配置 */
+    position: fixed; /* absolute → fixed に変更 */
     top: 50%; /* ゲーム画面中央 */
     left: 50%;
     transform: translate(-50%, -50%); /* 中央配置 */
@@ -339,7 +244,7 @@ button {
     padding: 15px;
     border-radius: 12px;
     display: none;
-    z-index: 1000; /* ゲーム画面内で最前面 */
+    z-index: 9999; /* z-indexを高く設定 */
     width: 85%; /* ゲーム画面の85%幅 */
     max-height: 80%; /* ゲーム画面の80%高さ以下 */
     overflow-y: auto; /* 縦スクロール可能 */
@@ -351,103 +256,21 @@ button {
 .game-area {
     position: relative;
     width: 100%;
+    max-width: 600px; /* グリッドの最大サイズ */
     flex: 1;
-    background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
-    border: 4px solid rgba(255, 255, 255, 0.2);
+    background: rgba(248, 249, 250, 0.1); /* シンプルな半透明背景 */
+    border: 3px solid rgba(255, 255, 255, 0.3);
     border-radius: 15px;
     margin: 10px 0;
-    overflow: hidden;
     box-sizing: border-box;
-    padding: 10px;
-}
-
-/* 固定の粒子背景（隙間埋め用） */
-.game-area {
-    background-image: 
-        radial-gradient(2px 2px at 25px 25px, #ff6b6b, transparent),
-        radial-gradient(3px 3px at 75px 55px, #4ecdc4, transparent),
-        radial-gradient(2px 2px at 125px 15px, #45b7d1, transparent),
-        radial-gradient(3px 3px at 175px 75px, #96ceb4, transparent),
-        radial-gradient(2px 2px at 225px 35px, #ffeaa7, transparent),
-        radial-gradient(3px 3px at 275px 65px, #fd79a8, transparent),
-        radial-gradient(2px 2px at 325px 5px, #a29bfe, transparent),
-        radial-gradient(3px 3px at 375px 45px, #fd63f6, transparent),
-        radial-gradient(2px 2px at 425px 85px, #55a3ff, transparent),
-        radial-gradient(3px 3px at 475px 20px, #00b894, transparent);
-    background-repeat: repeat;
-    background-size: 500px 100px;
-}
-
-/* ゲームエリア内のアニメーション粒子 - 1層目 */
-.game-area::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-        radial-gradient(2px 2px at 20px 30px, #ff6b6b, transparent),
-        radial-gradient(3px 3px at 40px 70px, #4ecdc4, transparent),
-        radial-gradient(2px 2px at 90px 40px, #45b7d1, transparent),
-        radial-gradient(3px 3px at 130px 80px, #96ceb4, transparent),
-        radial-gradient(2px 2px at 160px 30px, #ffeaa7, transparent),
-        radial-gradient(3px 3px at 200px 60px, #fd79a8, transparent),
-        radial-gradient(2px 2px at 250px 90px, #a29bfe, transparent),
-        radial-gradient(3px 3px at 280px 25px, #fd63f6, transparent),
-        radial-gradient(2px 2px at 50px 100px, #55a3ff, transparent),
-        radial-gradient(3px 3px at 180px 15px, #00b894, transparent);
-    background-repeat: repeat;
-    background-size: 300px 120px;
-    animation: gameAreaParticleFall 7s linear infinite;
-    pointer-events: none;
-    z-index: 0;
-    border-radius: 11px;
-}
-
-/* ゲームエリア内のアニメーション粒子 - 2層目 */
-.game-area::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-        radial-gradient(3px 3px at 80px 20px, #a29bfe, transparent),
-        radial-gradient(2px 2px at 120px 60px, #fd63f6, transparent),
-        radial-gradient(3px 3px at 170px 90px, #55a3ff, transparent),
-        radial-gradient(2px 2px at 220px 40px, #00b894, transparent),
-        radial-gradient(3px 3px at 270px 70px, #fdcb6e, transparent),
-        radial-gradient(2px 2px at 30px 85px, #e17055, transparent);
-    background-repeat: repeat;
-    background-size: 300px 120px;
-    animation: gameAreaParticleRain 5s linear infinite;
-    pointer-events: none;
-    z-index: 1;
-    border-radius: 11px;
-}
-
-@keyframes gameAreaParticleFall {
-    0% { 
-        transform: translateY(-60px);
-        opacity: 0.8;
-    }
-    100% { 
-        transform: translateY(calc(100vh + 60px));
-        opacity: 0.1;
-    }
-}
-
-@keyframes gameAreaParticleRain {
-    0% { 
-        transform: translateY(-40px);
-        opacity: 0.6;
-    }
-    100% { 
-        transform: translateY(calc(100vh + 40px));
-        opacity: 0.05;
-    }
+    padding: 15px;
+    
+    /* 5x5グリッドレイアウト */
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 8px;
+    aspect-ratio: 1; /* 正方形を維持 */
 }
 
 .ball:hover {
@@ -1254,5 +1077,131 @@ button {
         font-size: 1.0em;
         font-weight: 500; /* bold → 500 に軽量化 */
         margin-top: 8px;
+    }
+}
+
+/* ============ ランキング表示用スタイル ============ */
+.ranking-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.ranking-display {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    color: white;
+}
+
+.ranking-display h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.ranking-table th {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 12px 8px;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+}
+
+.ranking-table td {
+    padding: 10px 8px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ranking-table tr.top-rank {
+    background: rgba(255, 215, 0, 0.2);
+    font-weight: bold;
+}
+
+.ranking-table tr.top-rank:first-child td:first-child::before {
+    content: "🥇 ";
+}
+
+.ranking-table tr.top-rank:nth-child(2) td:first-child::before {
+    content: "🥈 ";
+}
+
+.ranking-table tr.top-rank:nth-child(3) td:first-child::before {
+    content: "🥉 ";
+}
+
+.close-ranking-btn {
+    display: block;
+    margin: 0 auto;
+    padding: 12px 30px;
+    background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close-ranking-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.ranking-control, #ranking-btn-mobile {
+    background: linear-gradient(45deg, #ffd700, #ffed4e);
+    color: #333;
+    font-weight: bold;
+}
+
+.ranking-control:hover, #ranking-btn-mobile:hover {
+    background: linear-gradient(45deg, #ffed4e, #ffd700);
+    transform: translateY(-2px);
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+    .ranking-display {
+        padding: 20px;
+        max-width: 95%;
+    }
+    
+    .ranking-display h2 {
+        font-size: 20px;
+    }
+    
+    .ranking-table th,
+    .ranking-table td {
+        padding: 8px 4px;
+        font-size: 14px;
+    }
+    
+    .close-ranking-btn {
+        padding: 10px 25px;
+        font-size: 14px;
     }
 }
