@@ -4,7 +4,7 @@ let gameState = {
     startTime: null,
     currentNumber: 1,
     score: 0,
-    totalBalls: 20,
+    totalBalls: 25, // 20 → 25に変更（5x5グリッド）
     timer: null,
     elapsedTime: 0,
     timeoutTimer: null,  // 5秒タイムアウト用タイマー
