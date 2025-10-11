@@ -34,36 +34,35 @@
             お使いのブラウザはオーディオをサポートしていません。
         </audio>
         
-        <div class="info-panel">
-            <div class="timer">反応時間: <span id="timer">0.00</span>秒</div>
-            <div class="next-number">次の番号: <span id="next-number">1</span></div>
-            <div class="score">進捗: <span id="score">0</span>/25</div>
-            <div class="best-score">ベスト: <span id="best-score">--</span>秒</div>
-        </div>
-        <div class="controls">
-            <button id="start-btn">ゲーム開始（音楽付き）</button>
-            <button id="reset-btn">リセット</button>
-            <button id="music-btn" class="music-control">🎵 音楽ON/OFF</button>
-            <button id="ranking-btn" class="ranking-control">⚡ 反射神経ランキング</button>
-            <button id="test-sound-btn" style="background: orange; color: white;">🔊 音テスト</button>
-        </div>
-        <!-- モバイル用：情報パネルとボタンを1行に配置 -->
-        <div class="mobile-controls">
-            <div class="mobile-info">
-                <span class="timer">⏱️<span id="timer-mobile">0.00</span>s</span>
-                <span class="next-number">次:<span id="next-number-mobile">1</span></span>
-                <span class="score">得点:<span id="score-mobile">0</span>/20</span>
+        <!-- 中央スタート画面 -->
+        <div class="start-screen" id="start-screen">
+            <div class="start-content">
+                <h2>⚡ 反射神経テスト</h2>
+                <p>1から25までの数字を順番通りに<br>できるだけ速くタップしよう！</p>
+                <button id="main-start-btn" class="main-start-btn">🎮 ゲーム開始</button>
+                <div class="start-controls">
+                    <button id="music-btn" class="music-control">🎵 音楽ON/OFF</button>
+                    <button id="ranking-btn" class="ranking-control">⚡ ランキング</button>
+                    <button id="test-sound-btn" class="test-sound-btn">🔊 音テスト</button>
+                </div>
             </div>
-            <div class="mobile-buttons">
-                <button id="start-btn-mobile">開始</button>
-                <button id="reset-btn-mobile">終了</button>
-                <button id="music-btn-mobile">🎵</button>
-                <button id="ranking-btn-mobile">🏆</button>
+        </div>
+        
+        <!-- ゲーム中の情報パネル（ゲーム開始時に表示） -->
+        <div class="game-info" id="game-info" style="display: none;">
+            <div class="info-panel">
+                <div class="timer">反応時間: <span id="timer">0.00</span>秒</div>
+                <div class="next-number">次の番号: <span id="next-number">1</span></div>
+                <div class="score">進捗: <span id="score">0</span>/25</div>
+                <div class="best-score">ベスト: <span id="best-score">--</span>秒</div>
+            </div>
+            <div class="game-controls">
+                <button id="reset-btn" class="reset-btn">🔄 リセット</button>
             </div>
         </div>
         
         <!-- バージョン情報 -->
-        <div class="version-info">v2.5 - クリア画面ゲーム内配置・文字軽量化版</div>
+        <div class="version-info">v2.6 - 中央スタート画面・シンプルUI版</div>
         <div class="game-area" id="game-area">
             <!-- ボールがここに動的に生成されます -->
         </div>

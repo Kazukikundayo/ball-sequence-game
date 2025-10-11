@@ -17,7 +17,12 @@ let gameState = {
 
 // DOM要素の取得
 const elements = {
-    startBtn: document.getElementById('start-btn'),
+    // 新しいUI要素
+    startScreen: document.getElementById('start-screen'),
+    mainStartBtn: document.getElementById('main-start-btn'),
+    gameInfo: document.getElementById('game-info'),
+    
+    // 既存の要素
     resetBtn: document.getElementById('reset-btn'),
     musicBtn: document.getElementById('music-btn'),
     timer: document.getElementById('timer'),
@@ -35,14 +40,7 @@ const elements = {
     backgroundMusic: document.getElementById('background-music'),
     clickSound: document.getElementById('click-sound'),
     clearSound: document.getElementById('clear-sound'),
-    timerMobile: document.getElementById('timer-mobile'),
-    nextNumberMobile: document.getElementById('next-number-mobile'),
-    scoreMobile: document.getElementById('score-mobile'),
-    startBtnMobile: document.getElementById('start-btn-mobile'),
-    resetBtnMobile: document.getElementById('reset-btn-mobile'),
-    musicBtnMobile: document.getElementById('music-btn-mobile'),
-    rankingBtn: document.getElementById('ranking-btn'),
-    rankingBtnMobile: document.getElementById('ranking-btn-mobile')
+    rankingBtn: document.getElementById('ranking-btn')
 };
 
 // 音楽状態管理
@@ -163,6 +161,14 @@ async function startGame() {
     // ベストスコアを事前に取得してキャッシュ
     await initializeBestScore();
     
+    // UI切り替え：スタート画面を非表示、ゲーム情報を表示
+    if (elements.startScreen) {
+        elements.startScreen.style.display = 'none';
+    }
+    if (elements.gameInfo) {
+        elements.gameInfo.style.display = 'block';
+    }
+    
     gameState.isPlaying = true;
     gameState.startTime = Date.now();
     gameState.currentNumber = 1;
@@ -171,7 +177,6 @@ async function startGame() {
     gameState.wrongClicks = 0;
     gameState.penaltyTime = 0;
     
-    elements.startBtn.disabled = true;
     elements.result.style.display = 'none';
     updateUI();
     
@@ -924,7 +929,14 @@ function resetGame() {
     gameState.wrongClicks = 0;
     gameState.penaltyTime = 0;
     
-    elements.startBtn.disabled = false;
+    // UI切り替え：ゲーム情報を非表示、スタート画面を表示
+    if (elements.gameInfo) {
+        elements.gameInfo.style.display = 'none';
+    }
+    if (elements.startScreen) {
+        elements.startScreen.style.display = 'flex';
+    }
+    
     elements.result.style.display = 'none';
     elements.gameArea.innerHTML = '';
     
@@ -939,8 +951,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // ベストスコア表示の初期化
     updateBestScoreDisplay();
     
-    if (elements.startBtn) {
-        elements.startBtn.addEventListener('click', startGame);
+    // 新しいメインスタートボタン
+    if (elements.mainStartBtn) {
+        elements.mainStartBtn.addEventListener('click', startGame);
     }
     
     if (elements.resetBtn) {
@@ -954,7 +967,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (elements.playAgainBtn) {
         elements.playAgainBtn.addEventListener('click', () => {
             elements.result.style.display = 'none';
-            startGame();
+            resetGame(); // スタート画面に戻る
         });
     }
     
