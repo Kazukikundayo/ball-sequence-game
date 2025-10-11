@@ -87,6 +87,10 @@ function toggleBackgroundMusic() {
 // クリック音を再生
 function playClickSound() {
     try {
+        if (!elements.clickSound) {
+            console.log('Click sound element not found');
+            return;
+        }
         elements.clickSound.currentTime = 0;
         elements.clickSound.volume = 0.7;
         const playPromise = elements.clickSound.play();
@@ -263,6 +267,7 @@ function handleBallClick(number, ballElement) {
         ballElement.style.opacity = '0';
         ballElement.style.transform = 'scale(0.8)';
         ballElement.style.pointerEvents = 'none';
+        ballElement.style.animation = 'none'; // フロートアニメーションを停止
         gameState.currentNumber++;
         gameState.score++;
         
@@ -998,6 +1003,17 @@ function resetGame() {
     }
     
     elements.result.style.display = 'none';
+    
+    // 既存のパネルの状態をリセット
+    const resetPanels = document.querySelectorAll('.ball');
+    resetPanels.forEach(panel => {
+        panel.classList.remove('timeout-warning');
+        panel.style.opacity = '';
+        panel.style.transform = '';
+        panel.style.pointerEvents = '';
+        panel.style.animation = '';
+    });
+    
     elements.gameArea.innerHTML = '';
     
     updateUI();
