@@ -396,10 +396,10 @@ async function checkIfNewRecord(newScore) {
                 
                 if (githubBest && newScore.finalScore < githubBest) {
                     isNewRecord = true;
-                    console.log('GitHub新記録:', newScore.finalScore, 'vs GitHub記録:', githubBest);
+                    console.log('ファミリー新記録:', newScore.finalScore, 'vs ファミリー記録:', githubBest);
                 }
             } catch (error) {
-                console.log('GitHub記録取得失敗、ローカル判定を使用:', error.message);
+                console.log('ファミリー記録取得失敗、ローカル判定を使用:', error.message);
             }
         }
         
@@ -479,7 +479,7 @@ async function saveRanking(newScore) {
         // プレイヤー名を取得
         let playerName = newScore.playerName;
         if (!playerName || playerName.trim() === '') {
-            playerName = prompt('プレイヤー名を入力してください（GitHub共有ランキング用）:', 'Player');
+            playerName = prompt('プレイヤー名を入力してください（ファミリーランキング用）:', 'Player');
             if (!playerName || playerName.trim() === '') {
                 playerName = 'Anonymous';
             }
@@ -489,7 +489,7 @@ async function saveRanking(newScore) {
         const githubToken = localStorage.getItem('github_token');
         
         if (githubToken && typeof githubRanking !== 'undefined') {
-            console.log('GitHub共有ランキングに保存中...');
+            console.log('ファミリーランキングに保存中...');
             
             try {
                 const githubResult = await githubRanking.addScore(
@@ -499,8 +499,8 @@ async function saveRanking(newScore) {
                     newScore.wrongClicks
                 );
                 
-                console.log('GitHub共有ランキング保存成功');
-                showRanking(true, 'GitHub共有ランキングに登録されました！🎉');
+                console.log('ファミリーランキング保存成功');
+                showRanking(true, 'ファミリーランキングに登録されました！🎉');
                 return;
                 
             } catch (githubError) {
@@ -568,22 +568,22 @@ async function showRanking(isGitHubMode = null, message = '') {
         
         if (githubToken && typeof githubRanking !== 'undefined' && isGitHubMode !== false) {
             try {
-                console.log('GitHub共有ランキングを取得中...');
+                console.log('ファミリーランキングを取得中...');
                 const gitHubData = await githubRanking.fetchRankingsFromGitHub();
                 rankingData = gitHubData;
-                dataSource = '🌐 GitHub共有ランキング';
-                console.log('GitHub共有ランキング取得成功');
+                dataSource = '👨‍👩‍👧‍👦 ファミリーランキング';
+                console.log('ファミリーランキング取得成功');
             } catch (error) {
-                console.warn('GitHub取得失敗、ローカルデータを使用:', error);
+                console.warn('ファミリーランキング取得失敗、ローカルデータを使用:', error);
                 const localData = JSON.parse(localStorage.getItem('gameRanking')) || { rankings: [] };
                 rankingData = { rankings: localData.rankings || [] };
-                dataSource = '💾 ローカルランキング (GitHub接続失敗)';
+                dataSource = '💾 ローカルランキング (オンライン接続失敗)';
             }
         } else {
             // ローカルデータのみ使用
             const localData = JSON.parse(localStorage.getItem('gameRanking')) || { rankings: [] };
             rankingData = { rankings: localData.rankings || [] };
-            dataSource = githubToken ? '💾 ローカルランキング' : '💾 ローカルランキング (GitHub未設定)';
+            dataSource = githubToken ? '💾 ローカルランキング' : '💾 ローカルランキング (ファミリー設定未完了)';
         }
         
         let rankingHTML = '<div class="ranking-display">';
@@ -595,9 +595,9 @@ async function showRanking(isGitHubMode = null, message = '') {
         
         rankingHTML += `<h2>🏆 ${dataSource}</h2>`;
         
-        // GitHub設定ボタンと同期ボタン
+        // ランキング設定ボタンと同期ボタン
         rankingHTML += '<div class="github-controls">';
-        rankingHTML += '<button onclick="showGitHubSetup()" class="github-setup-btn">⚙️ GitHub設定</button>';
+        rankingHTML += '<button onclick="showGitHubSetup()" class="github-setup-btn">⚙️ ランキング設定</button>';
         
         if (githubToken && typeof githubRanking !== 'undefined') {
             rankingHTML += '<button onclick="testGitHubSync()" class="sync-btn">🔄 同期テスト</button>';
@@ -737,7 +737,7 @@ async function testGitHubSync() {
 function showGitHubSetup() {
     try {
         let setupHTML = '<div class="github-setup">';
-        setupHTML += '<h3>⚙️ GitHub共有ランキング設定</h3>';
+        setupHTML += '<h3>⚙️ ファミリーランキング設定</h3>';
         setupHTML += '<p>作成したPersonal Access Tokenを入力してください：</p>';
         
         setupHTML += '<div class="setup-steps">';
