@@ -252,6 +252,12 @@ function handleBallClick(number, ballElement) {
         return;
     }
     
+    // タイムアウト警告をクリア
+    const allPanels = document.querySelectorAll('.ball');
+    allPanels.forEach(panel => {
+        panel.classList.remove('timeout-warning');
+    });
+    
     if (number === gameState.currentNumber) {
         playClickSound();
         ballElement.style.visibility = 'hidden';
@@ -309,10 +315,10 @@ function startTimeoutTimer() {
     
     gameState.timeoutTimer = setTimeout(() => {
         const currentPanel = document.querySelector(`[data-number="${gameState.currentNumber}"]`);
-        if (currentPanel) {
+        if (currentPanel && gameState.isPlaying) {
             currentPanel.classList.add('timeout-warning');
         }
-    }, 5000);
+    }, 2000); // 5秒から2秒に変更
 }
 
 function endGame() {
@@ -323,6 +329,12 @@ function endGame() {
         clearTimeout(gameState.timeoutTimer);
         gameState.timeoutTimer = null;
     }
+    
+    // タイムアウト警告をクリア
+    const allPanels = document.querySelectorAll('.ball');
+    allPanels.forEach(panel => {
+        panel.classList.remove('timeout-warning');
+    });
     
     const actualTime = gameState.elapsedTime;
     const finalTime = actualTime + gameState.penaltyTime;
@@ -962,6 +974,12 @@ function resetGame() {
         clearTimeout(gameState.timeoutTimer);
         gameState.timeoutTimer = null;
     }
+    
+    // タイムアウト警告をクリア
+    const allPanels = document.querySelectorAll('.ball');
+    allPanels.forEach(panel => {
+        panel.classList.remove('timeout-warning');
+    });
     
     gameState.currentNumber = 1;
     gameState.score = 0;

@@ -387,7 +387,8 @@ button {
     }
 }
 
-.number-panel.timeout-warning {
+.number-panel.timeout-warning,
+.ball.timeout-warning {
     animation: timeoutBlink 0.4s ease-in-out infinite !important;
     z-index: 1000 !important;
 }
